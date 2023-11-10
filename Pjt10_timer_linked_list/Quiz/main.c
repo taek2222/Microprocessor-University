@@ -29,6 +29,7 @@ int main()
 		else if (!strcmp(cp, "list" )) app_list(ap);
 		else if (!strcmp(cp, "timer" )) app_timer(ap);
 		else if (!strcmp(cp, "add" )) app_add(ap, ab);
+		else if (!strcmp(cp, "cal" )) app_cal(ap);
 		else						printf("Unknown command ...\n");
 	}
 	printf( "logout, good bye !!!\n");
@@ -86,4 +87,27 @@ void app_add(char *ap, char *ap1)
 	num2 = atoi(ap1);
 
 	printf(" %d \n", num1 + num2);
+}
+
+void app_cal(char *ap)
+{
+	int a, b, s;
+	char c;
+	sscanf(ap, "%d%c%d", &a, &c, &b);
+	switch(c) {
+		case '+':
+			printf("%d \n", a + b);
+			break;
+		case '*':
+			printf("%d \n", a * b);
+			break;
+		case '/':
+			printf("%d \n", a / b);
+			break;
+		case '-':
+			printf("%d \n", a - b);
+			break;
+		default:
+			printf("no");
+	}
 }
