@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = linked.o main.o io.o uart.o 
+OBJECTS = linked.o main.o io.o uart.o prime.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -56,6 +56,9 @@ io.o: ../io.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 uart.o: ../uart.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+prime.o: ../prime.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link

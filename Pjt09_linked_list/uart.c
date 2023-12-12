@@ -12,6 +12,7 @@ int uart_getchar(FILE *stream);
 
 FILE Mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
 FILE Mystdin = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
+
 char uart_busy;
 
 void uart_init()

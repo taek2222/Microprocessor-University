@@ -17,7 +17,7 @@ main.o: ../main.c \
  c:\program\ files\ (x86)\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/version.h \
  c:\program\ files\ (x86)\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/fuse.h \
  c:\program\ files\ (x86)\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/lock.h \
- ../linked.h ../uart.h ../io.h
+ ../linked.h ../uart.h ../io.h ../prime.h
 
 c:\program\ files\ (x86)\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/stdio.h:
 
@@ -60,3 +60,5 @@ c:\program\ files\ (x86)\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.6.
 ../uart.h:
 
 ../io.h:
+
+../prime.h:
