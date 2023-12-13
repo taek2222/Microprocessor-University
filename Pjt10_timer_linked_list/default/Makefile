@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = io.o time.o main.o uart.o linked.o 
+OBJECTS = io.o linked.o main.o uart.o time.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -49,7 +49,7 @@ all: $(TARGET) Pjt10_timer_linker_list.hex Pjt10_timer_linker_list.eep Pjt10_tim
 io.o: ../io.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
-time.o: ../time.c
+linked.o: ../linked.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 main.o: ../main.c
@@ -58,7 +58,7 @@ main.o: ../main.c
 uart.o: ../uart.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
-linked.o: ../linked.c
+time.o: ../time.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link

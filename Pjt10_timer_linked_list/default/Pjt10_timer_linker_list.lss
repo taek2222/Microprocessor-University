@@ -23,11 +23,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  0000062c  00000000  00000000  0000750c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000006fa  00000000  00000000  00007b38  2**0
+ 10 .debug_str    0000070f  00000000  00000000  00007b38  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000018c6  00000000  00000000  00008232  2**0
+ 11 .debug_loc    000018c6  00000000  00000000  00008247  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000b0  00000000  00000000  00009af8  2**0
+ 12 .debug_ranges 000000b0  00000000  00000000  00009b0d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -58,9 +58,9 @@ Disassembly of section .text:
       58:	0c 94 94 00 	jmp	0x128	; 0x128 <__bad_interrupt>
       5c:	0c 94 94 00 	jmp	0x128	; 0x128 <__bad_interrupt>
       60:	0c 94 94 00 	jmp	0x128	; 0x128 <__bad_interrupt>
-      64:	0c 94 5e 02 	jmp	0x4bc	; 0x4bc <__vector_25>
+      64:	0c 94 8a 02 	jmp	0x514	; 0x514 <__vector_25>
       68:	0c 94 94 00 	jmp	0x128	; 0x128 <__bad_interrupt>
-      6c:	0c 94 2f 02 	jmp	0x45e	; 0x45e <__vector_27>
+      6c:	0c 94 5b 02 	jmp	0x4b6	; 0x4b6 <__vector_27>
       70:	0c 94 94 00 	jmp	0x128	; 0x128 <__bad_interrupt>
       74:	0c 94 94 00 	jmp	0x128	; 0x128 <__bad_interrupt>
       78:	0c 94 94 00 	jmp	0x128	; 0x128 <__bad_interrupt>
@@ -328,1347 +328,1347 @@ int qo_delete()
 }
      248:	08 95       	ret
 
-0000024a <get_timer>:
-
-struct timer *get_timer()
-{
-	struct timer *tp;
-
-	tp = (struct timer *)malloc(sizeof(*tp));
-     24a:	8e e0       	ldi	r24, 0x0E	; 14
-     24c:	90 e0       	ldi	r25, 0x00	; 0
-     24e:	0e 94 2d 05 	call	0xa5a	; 0xa5a <malloc>
-	return tp;
-}
-     252:	08 95       	ret
-
-00000254 <insert_timer>:
-
-struct timer *Thead = NULL;
-
-void insert_timer(struct task *tskp, int ms) {
-     254:	ef 92       	push	r14
-     256:	ff 92       	push	r15
-     258:	0f 93       	push	r16
-     25a:	1f 93       	push	r17
-     25c:	cf 93       	push	r28
-     25e:	df 93       	push	r29
-     260:	f8 2e       	mov	r15, r24
-     262:	e9 2e       	mov	r14, r25
-     264:	8b 01       	movw	r16, r22
-	int	total;
-	struct timer *tp, *cp, *pp;
-
-	tp = get_timer();
-     266:	0e 94 25 01 	call	0x24a	; 0x24a <get_timer>
-     26a:	ec 01       	movw	r28, r24
-	tp->task = *tskp;
-     26c:	dc 01       	movw	r26, r24
-     26e:	12 96       	adiw	r26, 0x02	; 2
-     270:	ef 2d       	mov	r30, r15
-     272:	fe 2d       	mov	r31, r14
-     274:	8a e0       	ldi	r24, 0x0A	; 10
-     276:	01 90       	ld	r0, Z+
-     278:	0d 92       	st	X+, r0
-     27a:	81 50       	subi	r24, 0x01	; 1
-     27c:	e1 f7       	brne	.-8      	; 0x276 <insert_timer+0x22>
-	tp->time = ms;
-     27e:	19 83       	std	Y+1, r17	; 0x01
-     280:	08 83       	st	Y, r16
-
-	if (Thead == NULL) {
-     282:	e0 91 b0 02 	lds	r30, 0x02B0
-     286:	f0 91 b1 02 	lds	r31, 0x02B1
-     28a:	30 97       	sbiw	r30, 0x00	; 0
-     28c:	29 f4       	brne	.+10     	; 0x298 <insert_timer+0x44>
-		Thead = tp, tp->link = NULL;
-     28e:	d0 93 b1 02 	sts	0x02B1, r29
-     292:	c0 93 b0 02 	sts	0x02B0, r28
-     296:	2f c0       	rjmp	.+94     	; 0x2f6 <insert_timer+0xa2>
-
-	tp = get_timer();
-	tp->task = *tskp;
-	tp->time = ms;
-
-	if (Thead == NULL) {
-     298:	40 e0       	ldi	r20, 0x00	; 0
-     29a:	50 e0       	ldi	r21, 0x00	; 0
-     29c:	20 e0       	ldi	r18, 0x00	; 0
-     29e:	30 e0       	ldi	r19, 0x00	; 0
-     2a0:	01 c0       	rjmp	.+2      	; 0x2a4 <insert_timer+0x50>
-		Thead = tp, tp->link = NULL;
-		return;
-	}
-	pp = NULL, total = 0;
-	for (cp = Thead; cp; cp = cp->link) {
-     2a2:	fd 01       	movw	r30, r26
-		total += cp->time;
-     2a4:	80 81       	ld	r24, Z
-     2a6:	91 81       	ldd	r25, Z+1	; 0x01
-     2a8:	28 0f       	add	r18, r24
-     2aa:	39 1f       	adc	r19, r25
-		if (total >= ms)
-     2ac:	20 17       	cp	r18, r16
-     2ae:	31 07       	cpc	r19, r17
-     2b0:	34 f4       	brge	.+12     	; 0x2be <insert_timer+0x6a>
-	if (Thead == NULL) {
-		Thead = tp, tp->link = NULL;
-		return;
-	}
-	pp = NULL, total = 0;
-	for (cp = Thead; cp; cp = cp->link) {
-     2b2:	a4 85       	ldd	r26, Z+12	; 0x0c
-     2b4:	b5 85       	ldd	r27, Z+13	; 0x0d
-     2b6:	af 01       	movw	r20, r30
-     2b8:	10 97       	sbiw	r26, 0x00	; 0
-     2ba:	99 f7       	brne	.-26     	; 0x2a2 <insert_timer+0x4e>
-     2bc:	01 c0       	rjmp	.+2      	; 0x2c0 <insert_timer+0x6c>
-		total += cp->time;
-		if (total >= ms)
-     2be:	df 01       	movw	r26, r30
-			break;
-		pp = cp;
-	}
-	if (pp == NULL) {
-     2c0:	41 15       	cp	r20, r1
-     2c2:	51 05       	cpc	r21, r1
-     2c4:	79 f4       	brne	.+30     	; 0x2e4 <insert_timer+0x90>
-		cp->time -= tp->time;
-     2c6:	8d 91       	ld	r24, X+
-     2c8:	9c 91       	ld	r25, X
-     2ca:	11 97       	sbiw	r26, 0x01	; 1
-     2cc:	80 1b       	sub	r24, r16
-     2ce:	91 0b       	sbc	r25, r17
-     2d0:	11 96       	adiw	r26, 0x01	; 1
-     2d2:	9c 93       	st	X, r25
-     2d4:	8e 93       	st	-X, r24
-		tp->link = cp, Thead = tp;
-     2d6:	bd 87       	std	Y+13, r27	; 0x0d
-     2d8:	ac 87       	std	Y+12, r26	; 0x0c
-     2da:	d0 93 b1 02 	sts	0x02B1, r29
-     2de:	c0 93 b0 02 	sts	0x02B0, r28
-     2e2:	24 c0       	rjmp	.+72     	; 0x32c <insert_timer+0xd8>
-	}
-	else if (cp == NULL) {
-     2e4:	10 97       	sbiw	r26, 0x00	; 0
-     2e6:	51 f4       	brne	.+20     	; 0x2fc <insert_timer+0xa8>
-		tp->time -= total;
-     2e8:	02 1b       	sub	r16, r18
-     2ea:	13 0b       	sbc	r17, r19
-     2ec:	19 83       	std	Y+1, r17	; 0x01
-     2ee:	08 83       	st	Y, r16
-		pp->link = tp;
-     2f0:	fa 01       	movw	r30, r20
-     2f2:	d5 87       	std	Z+13, r29	; 0x0d
-     2f4:	c4 87       	std	Z+12, r28	; 0x0c
-		tp->link = NULL;
-     2f6:	1d 86       	std	Y+13, r1	; 0x0d
-     2f8:	1c 86       	std	Y+12, r1	; 0x0c
-     2fa:	18 c0       	rjmp	.+48     	; 0x32c <insert_timer+0xd8>
-	}
-	else {
-		total -= cp->time;
-     2fc:	8d 91       	ld	r24, X+
-     2fe:	9c 91       	ld	r25, X
-     300:	11 97       	sbiw	r26, 0x01	; 1
-     302:	b9 01       	movw	r22, r18
-     304:	68 1b       	sub	r22, r24
-     306:	79 0b       	sbc	r23, r25
-		tp->time -= total;
-     308:	98 01       	movw	r18, r16
-     30a:	26 1b       	sub	r18, r22
-     30c:	37 0b       	sbc	r19, r23
-     30e:	39 83       	std	Y+1, r19	; 0x01
-     310:	28 83       	st	Y, r18
-		cp->time -= tp->time;
-     312:	8d 91       	ld	r24, X+
-     314:	9c 91       	ld	r25, X
-     316:	11 97       	sbiw	r26, 0x01	; 1
-     318:	82 1b       	sub	r24, r18
-     31a:	93 0b       	sbc	r25, r19
-     31c:	11 96       	adiw	r26, 0x01	; 1
-     31e:	9c 93       	st	X, r25
-     320:	8e 93       	st	-X, r24
-		pp->link = tp;
-     322:	fa 01       	movw	r30, r20
-     324:	d5 87       	std	Z+13, r29	; 0x0d
-     326:	c4 87       	std	Z+12, r28	; 0x0c
-		tp->link = cp;
-     328:	bd 87       	std	Y+13, r27	; 0x0d
-     32a:	ac 87       	std	Y+12, r26	; 0x0c
-	}
-}
-     32c:	df 91       	pop	r29
-     32e:	cf 91       	pop	r28
-     330:	1f 91       	pop	r17
-     332:	0f 91       	pop	r16
-     334:	ff 90       	pop	r15
-     336:	ef 90       	pop	r14
-     338:	08 95       	ret
-
-0000033a <tour_timer>:
-void tour_timer()
-{
-     33a:	ef 92       	push	r14
-     33c:	ff 92       	push	r15
-     33e:	0f 93       	push	r16
-     340:	1f 93       	push	r17
-     342:	cf 93       	push	r28
-     344:	df 93       	push	r29
-	struct timer *cp;
-	int		total = 0;
-
-	printf("\n");
-     346:	8a e0       	ldi	r24, 0x0A	; 10
-     348:	90 e0       	ldi	r25, 0x00	; 0
-     34a:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
-	for(cp = Thead; cp != NULL; cp = cp -> link) {
-     34e:	c0 91 b0 02 	lds	r28, 0x02B0
-     352:	d0 91 b1 02 	lds	r29, 0x02B1
-	}
-}
-void tour_timer()
-{
-	struct timer *cp;
-	int		total = 0;
-     356:	00 e0       	ldi	r16, 0x00	; 0
-     358:	10 e0       	ldi	r17, 0x00	; 0
-
-	printf("\n");
-	for(cp = Thead; cp != NULL; cp = cp -> link) {
-		total += cp->time;
-		printf("-->%d(%d) ", cp->time, total);
-     35a:	80 e0       	ldi	r24, 0x00	; 0
-     35c:	e8 2e       	mov	r14, r24
-     35e:	82 e0       	ldi	r24, 0x02	; 2
-     360:	f8 2e       	mov	r15, r24
-{
-	struct timer *cp;
-	int		total = 0;
-
-	printf("\n");
-	for(cp = Thead; cp != NULL; cp = cp -> link) {
-     362:	20 c0       	rjmp	.+64     	; 0x3a4 <tour_timer+0x6a>
-		total += cp->time;
-     364:	88 81       	ld	r24, Y
-     366:	99 81       	ldd	r25, Y+1	; 0x01
-     368:	08 0f       	add	r16, r24
-     36a:	19 1f       	adc	r17, r25
-		printf("-->%d(%d) ", cp->time, total);
-     36c:	00 d0       	rcall	.+0      	; 0x36e <tour_timer+0x34>
-     36e:	00 d0       	rcall	.+0      	; 0x370 <tour_timer+0x36>
-     370:	ed b7       	in	r30, 0x3d	; 61
-     372:	fe b7       	in	r31, 0x3e	; 62
-     374:	31 96       	adiw	r30, 0x01	; 1
-     376:	ad b7       	in	r26, 0x3d	; 61
-     378:	be b7       	in	r27, 0x3e	; 62
-     37a:	12 96       	adiw	r26, 0x02	; 2
-     37c:	fc 92       	st	X, r15
-     37e:	ee 92       	st	-X, r14
-     380:	11 97       	sbiw	r26, 0x01	; 1
-     382:	93 83       	std	Z+3, r25	; 0x03
-     384:	82 83       	std	Z+2, r24	; 0x02
-     386:	15 83       	std	Z+5, r17	; 0x05
-     388:	04 83       	std	Z+4, r16	; 0x04
-     38a:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
-{
-	struct timer *cp;
-	int		total = 0;
-
-	printf("\n");
-	for(cp = Thead; cp != NULL; cp = cp -> link) {
-     38e:	0c 84       	ldd	r0, Y+12	; 0x0c
-     390:	dd 85       	ldd	r29, Y+13	; 0x0d
-     392:	c0 2d       	mov	r28, r0
-     394:	8d b7       	in	r24, 0x3d	; 61
-     396:	9e b7       	in	r25, 0x3e	; 62
-     398:	06 96       	adiw	r24, 0x06	; 6
-     39a:	0f b6       	in	r0, 0x3f	; 63
-     39c:	f8 94       	cli
-     39e:	9e bf       	out	0x3e, r25	; 62
-     3a0:	0f be       	out	0x3f, r0	; 63
-     3a2:	8d bf       	out	0x3d, r24	; 61
-     3a4:	20 97       	sbiw	r28, 0x00	; 0
-     3a6:	f1 f6       	brne	.-68     	; 0x364 <tour_timer+0x2a>
-		total += cp->time;
-		printf("-->%d(%d) ", cp->time, total);
-	}
-	printf("\n");
-     3a8:	8a e0       	ldi	r24, 0x0A	; 10
-     3aa:	90 e0       	ldi	r25, 0x00	; 0
-     3ac:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
-}
-     3b0:	df 91       	pop	r29
-     3b2:	cf 91       	pop	r28
-     3b4:	1f 91       	pop	r17
-     3b6:	0f 91       	pop	r16
-     3b8:	ff 90       	pop	r15
-     3ba:	ef 90       	pop	r14
-     3bc:	08 95       	ret
-
-000003be <free_timer>:
-
-void free_timer()
-{
-	struct timer *cp;
-	for( ; Thead != NULL; ) {
-     3be:	09 c0       	rjmp	.+18     	; 0x3d2 <free_timer+0x14>
-		cp = Thead;
-		Thead = cp -> link;
-     3c0:	fc 01       	movw	r30, r24
-     3c2:	24 85       	ldd	r18, Z+12	; 0x0c
-     3c4:	35 85       	ldd	r19, Z+13	; 0x0d
-     3c6:	30 93 b1 02 	sts	0x02B1, r19
-     3ca:	20 93 b0 02 	sts	0x02B0, r18
-		free(cp);
-     3ce:	0e 94 c3 05 	call	0xb86	; 0xb86 <free>
-}
-
-void free_timer()
-{
-	struct timer *cp;
-	for( ; Thead != NULL; ) {
-     3d2:	80 91 b0 02 	lds	r24, 0x02B0
-     3d6:	90 91 b1 02 	lds	r25, 0x02B1
-     3da:	00 97       	sbiw	r24, 0x00	; 0
-     3dc:	89 f7       	brne	.-30     	; 0x3c0 <free_timer+0x2>
-		cp = Thead;
-		Thead = cp -> link;
-		free(cp);
-	}
-}
-     3de:	08 95       	ret
-
-000003e0 <app_timer>:
-
-void app_timer(char *ap)
-{
-     3e0:	0f 93       	push	r16
-     3e2:	1f 93       	push	r17
-     3e4:	cf 93       	push	r28
-     3e6:	df 93       	push	r29
-     3e8:	cd b7       	in	r28, 0x3d	; 61
-     3ea:	de b7       	in	r29, 0x3e	; 62
-     3ec:	62 97       	sbiw	r28, 0x12	; 18
-     3ee:	0f b6       	in	r0, 0x3f	; 63
-     3f0:	f8 94       	cli
-     3f2:	de bf       	out	0x3e, r29	; 62
-     3f4:	0f be       	out	0x3f, r0	; 63
-     3f6:	cd bf       	out	0x3d, r28	; 61
-	char buf[8];
-	int ms;
-	struct task tsk;
-
-	while(1) {
-		printf( ">> ");
-     3f8:	0b e0       	ldi	r16, 0x0B	; 11
-     3fa:	12 e0       	ldi	r17, 0x02	; 2
-     3fc:	0f 92       	push	r0
-     3fe:	0f 92       	push	r0
-     400:	ed b7       	in	r30, 0x3d	; 61
-     402:	fe b7       	in	r31, 0x3e	; 62
-     404:	12 83       	std	Z+2, r17	; 0x02
-     406:	01 83       	std	Z+1, r16	; 0x01
-     408:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
-		if(fgets(buf, 8, stdin) == NULL || (ms = atoi(buf)) ==0)
-     40c:	0f 90       	pop	r0
-     40e:	0f 90       	pop	r0
-     410:	40 91 43 03 	lds	r20, 0x0343
-     414:	50 91 44 03 	lds	r21, 0x0344
-     418:	ce 01       	movw	r24, r28
-     41a:	01 96       	adiw	r24, 0x01	; 1
-     41c:	68 e0       	ldi	r22, 0x08	; 8
-     41e:	70 e0       	ldi	r23, 0x00	; 0
-     420:	0e 94 b7 06 	call	0xd6e	; 0xd6e <fgets>
-     424:	00 97       	sbiw	r24, 0x00	; 0
-     426:	61 f0       	breq	.+24     	; 0x440 <app_timer+0x60>
-     428:	ce 01       	movw	r24, r28
-     42a:	01 96       	adiw	r24, 0x01	; 1
-     42c:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <atoi>
-     430:	bc 01       	movw	r22, r24
-     432:	00 97       	sbiw	r24, 0x00	; 0
-     434:	29 f0       	breq	.+10     	; 0x440 <app_timer+0x60>
-			break;
-
-		insert_timer(&tsk, ms);
-     436:	ce 01       	movw	r24, r28
-     438:	09 96       	adiw	r24, 0x09	; 9
-     43a:	0e 94 2a 01 	call	0x254	; 0x254 <insert_timer>
-	}
-     43e:	de cf       	rjmp	.-68     	; 0x3fc <app_timer+0x1c>
-	tour_timer();
-     440:	0e 94 9d 01 	call	0x33a	; 0x33a <tour_timer>
-	free_timer();
-     444:	0e 94 df 01 	call	0x3be	; 0x3be <free_timer>
-}
-     448:	62 96       	adiw	r28, 0x12	; 18
-     44a:	0f b6       	in	r0, 0x3f	; 63
-     44c:	f8 94       	cli
-     44e:	de bf       	out	0x3e, r29	; 62
-     450:	0f be       	out	0x3f, r0	; 63
-     452:	cd bf       	out	0x3d, r28	; 61
-     454:	df 91       	pop	r29
-     456:	cf 91       	pop	r28
-     458:	1f 91       	pop	r17
-     45a:	0f 91       	pop	r16
-     45c:	08 95       	ret
-
-0000045e <__vector_27>:
-	printf( "logout, good bye !!!\n");
-	while(1); return 0;
-}
-
-ISR(USART0_TX_vect)
-{
-     45e:	1f 92       	push	r1
-     460:	0f 92       	push	r0
-     462:	0f b6       	in	r0, 0x3f	; 63
-     464:	0f 92       	push	r0
-     466:	0b b6       	in	r0, 0x3b	; 59
-     468:	0f 92       	push	r0
-     46a:	11 24       	eor	r1, r1
-     46c:	2f 93       	push	r18
-     46e:	3f 93       	push	r19
-     470:	4f 93       	push	r20
-     472:	5f 93       	push	r21
-     474:	6f 93       	push	r22
-     476:	7f 93       	push	r23
-     478:	8f 93       	push	r24
-     47a:	9f 93       	push	r25
-     47c:	af 93       	push	r26
-     47e:	bf 93       	push	r27
-     480:	ef 93       	push	r30
-     482:	ff 93       	push	r31
-	char	ch;
-
-	if((ch = qo_delete()) == 0)
-     484:	0e 94 08 01 	call	0x210	; 0x210 <qo_delete>
-     488:	88 23       	and	r24, r24
-     48a:	19 f4       	brne	.+6      	; 0x492 <__vector_27+0x34>
-		uart_busy = 0;
-     48c:	10 92 3e 03 	sts	0x033E, r1
-     490:	02 c0       	rjmp	.+4      	; 0x496 <__vector_27+0x38>
-	else
-		UDR0 = ch;
-     492:	80 93 c6 00 	sts	0x00C6, r24
-}
-     496:	ff 91       	pop	r31
-     498:	ef 91       	pop	r30
-     49a:	bf 91       	pop	r27
-     49c:	af 91       	pop	r26
-     49e:	9f 91       	pop	r25
-     4a0:	8f 91       	pop	r24
-     4a2:	7f 91       	pop	r23
-     4a4:	6f 91       	pop	r22
-     4a6:	5f 91       	pop	r21
-     4a8:	4f 91       	pop	r20
-     4aa:	3f 91       	pop	r19
-     4ac:	2f 91       	pop	r18
-     4ae:	0f 90       	pop	r0
-     4b0:	0b be       	out	0x3b, r0	; 59
-     4b2:	0f 90       	pop	r0
-     4b4:	0f be       	out	0x3f, r0	; 63
-     4b6:	0f 90       	pop	r0
-     4b8:	1f 90       	pop	r1
-     4ba:	18 95       	reti
-
-000004bc <__vector_25>:
-
-ISR(USART0_RX_vect)
-{
-     4bc:	1f 92       	push	r1
-     4be:	0f 92       	push	r0
-     4c0:	0f b6       	in	r0, 0x3f	; 63
-     4c2:	0f 92       	push	r0
-     4c4:	0b b6       	in	r0, 0x3b	; 59
-     4c6:	0f 92       	push	r0
-     4c8:	11 24       	eor	r1, r1
-     4ca:	2f 93       	push	r18
-     4cc:	3f 93       	push	r19
-     4ce:	4f 93       	push	r20
-     4d0:	5f 93       	push	r21
-     4d2:	6f 93       	push	r22
-     4d4:	7f 93       	push	r23
-     4d6:	8f 93       	push	r24
-     4d8:	9f 93       	push	r25
-     4da:	af 93       	push	r26
-     4dc:	bf 93       	push	r27
-     4de:	cf 93       	push	r28
-     4e0:	ef 93       	push	r30
-     4e2:	ff 93       	push	r31
-	char ch;
-
-	ch = UDR0;
-     4e4:	c0 91 c6 00 	lds	r28, 0x00C6
-	if ( ch != E0T) {
-     4e8:	c4 30       	cpi	r28, 0x04	; 4
-     4ea:	31 f0       	breq	.+12     	; 0x4f8 <__vector_25+0x3c>
-		if(ch == '\r') ch = '\n';
-     4ec:	cd 30       	cpi	r28, 0x0D	; 13
-     4ee:	09 f4       	brne	.+2      	; 0x4f2 <__vector_25+0x36>
-     4f0:	ca e0       	ldi	r28, 0x0A	; 10
-		uart_echo(ch);
-     4f2:	8c 2f       	mov	r24, r28
-     4f4:	0e 94 56 03 	call	0x6ac	; 0x6ac <uart_echo>
-	}
-	qi_insert(ch);
-     4f8:	8c 2f       	mov	r24, r28
-     4fa:	0e 94 a7 00 	call	0x14e	; 0x14e <qi_insert>
-}
-     4fe:	ff 91       	pop	r31
-     500:	ef 91       	pop	r30
-     502:	cf 91       	pop	r28
-     504:	bf 91       	pop	r27
-     506:	af 91       	pop	r26
-     508:	9f 91       	pop	r25
-     50a:	8f 91       	pop	r24
-     50c:	7f 91       	pop	r23
-     50e:	6f 91       	pop	r22
-     510:	5f 91       	pop	r21
-     512:	4f 91       	pop	r20
-     514:	3f 91       	pop	r19
-     516:	2f 91       	pop	r18
-     518:	0f 90       	pop	r0
-     51a:	0b be       	out	0x3b, r0	; 59
-     51c:	0f 90       	pop	r0
-     51e:	0f be       	out	0x3f, r0	; 63
-     520:	0f 90       	pop	r0
-     522:	1f 90       	pop	r1
-     524:	18 95       	reti
-
-00000526 <is_prime>:
-
-int is_prime(int n) {
-     526:	cf 93       	push	r28
-     528:	df 93       	push	r29
-     52a:	fc 01       	movw	r30, r24
-	int i;
-	for( i = 2; i <= n/2; i++)
-     52c:	62 e0       	ldi	r22, 0x02	; 2
-     52e:	70 e0       	ldi	r23, 0x00	; 0
-     530:	0e 94 06 05 	call	0xa0c	; 0xa0c <__divmodhi4>
-     534:	eb 01       	movw	r28, r22
-     536:	22 e0       	ldi	r18, 0x02	; 2
-     538:	30 e0       	ldi	r19, 0x00	; 0
-     53a:	08 c0       	rjmp	.+16     	; 0x54c <is_prime+0x26>
-		if((n%i) == 0)
-     53c:	cf 01       	movw	r24, r30
-     53e:	b9 01       	movw	r22, r18
-     540:	0e 94 06 05 	call	0xa0c	; 0xa0c <__divmodhi4>
-     544:	00 97       	sbiw	r24, 0x00	; 0
-     546:	41 f0       	breq	.+16     	; 0x558 <is_prime+0x32>
-	qi_insert(ch);
-}
-
-int is_prime(int n) {
-	int i;
-	for( i = 2; i <= n/2; i++)
-     548:	2f 5f       	subi	r18, 0xFF	; 255
-     54a:	3f 4f       	sbci	r19, 0xFF	; 255
-     54c:	c2 17       	cp	r28, r18
-     54e:	d3 07       	cpc	r29, r19
-     550:	ac f7       	brge	.-22     	; 0x53c <is_prime+0x16>
-		if((n%i) == 0)
-			return 0;
-	return 1;
-     552:	81 e0       	ldi	r24, 0x01	; 1
-     554:	90 e0       	ldi	r25, 0x00	; 0
-     556:	02 c0       	rjmp	.+4      	; 0x55c <is_prime+0x36>
-
-int is_prime(int n) {
-	int i;
-	for( i = 2; i <= n/2; i++)
-		if((n%i) == 0)
-			return 0;
-     558:	80 e0       	ldi	r24, 0x00	; 0
-     55a:	90 e0       	ldi	r25, 0x00	; 0
-	return 1;
-}
-     55c:	df 91       	pop	r29
-     55e:	cf 91       	pop	r28
-     560:	08 95       	ret
-
-00000562 <app_prime>:
-
-void app_prime(char *ap)
-{
-     562:	cf 92       	push	r12
-     564:	df 92       	push	r13
-     566:	ef 92       	push	r14
-     568:	ff 92       	push	r15
-     56a:	0f 93       	push	r16
-     56c:	1f 93       	push	r17
-     56e:	cf 93       	push	r28
-     570:	df 93       	push	r29
-	int t = 2000, count = 0, n;
-
-	if (ap) t = atoi(ap);
-     572:	00 97       	sbiw	r24, 0x00	; 0
-     574:	21 f0       	breq	.+8      	; 0x57e <app_prime+0x1c>
-     576:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <atoi>
-     57a:	7c 01       	movw	r14, r24
-     57c:	04 c0       	rjmp	.+8      	; 0x586 <app_prime+0x24>
-	return 1;
-}
-
-void app_prime(char *ap)
-{
-	int t = 2000, count = 0, n;
-     57e:	90 ed       	ldi	r25, 0xD0	; 208
-     580:	e9 2e       	mov	r14, r25
-     582:	97 e0       	ldi	r25, 0x07	; 7
-     584:	f9 2e       	mov	r15, r25
-
-	if (ap) t = atoi(ap);
-	for(n = 2; n <= t; n++) {
-     586:	c2 e0       	ldi	r28, 0x02	; 2
-     588:	d0 e0       	ldi	r29, 0x00	; 0
-	return 1;
-}
-
-void app_prime(char *ap)
-{
-	int t = 2000, count = 0, n;
-     58a:	00 e0       	ldi	r16, 0x00	; 0
-     58c:	10 e0       	ldi	r17, 0x00	; 0
-
-	if (ap) t = atoi(ap);
-	for(n = 2; n <= t; n++) {
-		if(is_prime(n)) {
-			count++;
-			printf( "%d is a prime. " "number !!!\n", n);
-     58e:	8f e0       	ldi	r24, 0x0F	; 15
-     590:	c8 2e       	mov	r12, r24
-     592:	82 e0       	ldi	r24, 0x02	; 2
-     594:	d8 2e       	mov	r13, r24
-void app_prime(char *ap)
-{
-	int t = 2000, count = 0, n;
-
-	if (ap) t = atoi(ap);
-	for(n = 2; n <= t; n++) {
-     596:	16 c0       	rjmp	.+44     	; 0x5c4 <app_prime+0x62>
-		if(is_prime(n)) {
-     598:	ce 01       	movw	r24, r28
-     59a:	0e 94 93 02 	call	0x526	; 0x526 <is_prime>
-     59e:	00 97       	sbiw	r24, 0x00	; 0
-     5a0:	81 f0       	breq	.+32     	; 0x5c2 <app_prime+0x60>
-			count++;
-     5a2:	0f 5f       	subi	r16, 0xFF	; 255
-     5a4:	1f 4f       	sbci	r17, 0xFF	; 255
-			printf( "%d is a prime. " "number !!!\n", n);
-     5a6:	00 d0       	rcall	.+0      	; 0x5a8 <app_prime+0x46>
-     5a8:	0f 92       	push	r0
-     5aa:	ed b7       	in	r30, 0x3d	; 61
-     5ac:	fe b7       	in	r31, 0x3e	; 62
-     5ae:	d2 82       	std	Z+2, r13	; 0x02
-     5b0:	c1 82       	std	Z+1, r12	; 0x01
-     5b2:	d4 83       	std	Z+4, r29	; 0x04
-     5b4:	c3 83       	std	Z+3, r28	; 0x03
-     5b6:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
-     5ba:	0f 90       	pop	r0
-     5bc:	0f 90       	pop	r0
-     5be:	0f 90       	pop	r0
-     5c0:	0f 90       	pop	r0
-void app_prime(char *ap)
-{
-	int t = 2000, count = 0, n;
-
-	if (ap) t = atoi(ap);
-	for(n = 2; n <= t; n++) {
-     5c2:	21 96       	adiw	r28, 0x01	; 1
-     5c4:	ec 16       	cp	r14, r28
-     5c6:	fd 06       	cpc	r15, r29
-     5c8:	3c f7       	brge	.-50     	; 0x598 <app_prime+0x36>
-		if(is_prime(n)) {
-			count++;
-			printf( "%d is a prime. " "number !!!\n", n);
-		}
-	}
-	printf("count = %d \n", count);
-     5ca:	00 d0       	rcall	.+0      	; 0x5cc <app_prime+0x6a>
-     5cc:	0f 92       	push	r0
-     5ce:	8a e2       	ldi	r24, 0x2A	; 42
-     5d0:	92 e0       	ldi	r25, 0x02	; 2
-     5d2:	ed b7       	in	r30, 0x3d	; 61
-     5d4:	fe b7       	in	r31, 0x3e	; 62
-     5d6:	92 83       	std	Z+2, r25	; 0x02
-     5d8:	81 83       	std	Z+1, r24	; 0x01
-     5da:	14 83       	std	Z+4, r17	; 0x04
-     5dc:	03 83       	std	Z+3, r16	; 0x03
-     5de:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
-     5e2:	0f 90       	pop	r0
-     5e4:	0f 90       	pop	r0
-     5e6:	0f 90       	pop	r0
-     5e8:	0f 90       	pop	r0
-}
-     5ea:	df 91       	pop	r29
-     5ec:	cf 91       	pop	r28
-     5ee:	1f 91       	pop	r17
-     5f0:	0f 91       	pop	r16
-     5f2:	ff 90       	pop	r15
-     5f4:	ef 90       	pop	r14
-     5f6:	df 90       	pop	r13
-     5f8:	cf 90       	pop	r12
-     5fa:	08 95       	ret
-
-000005fc <uart_getchar>:
-int uart_getchar(FILE *stream)
-{
-	char ch;
-
-	do {
-		cli();
-     5fc:	f8 94       	cli
-		ch = qi_delete();
-     5fe:	0e 94 c9 00 	call	0x192	; 0x192 <qi_delete>
-		sei();
-     602:	78 94       	sei
-	} while (ch == 0);
-     604:	88 23       	and	r24, r24
-     606:	d1 f3       	breq	.-12     	; 0x5fc <uart_getchar>
-
-	if (ch == E0T) return -1;
-     608:	84 30       	cpi	r24, 0x04	; 4
-     60a:	11 f0       	breq	.+4      	; 0x610 <uart_getchar+0x14>
-	else			return (ch);
-     60c:	90 e0       	ldi	r25, 0x00	; 0
-     60e:	08 95       	ret
-		cli();
-		ch = qi_delete();
-		sei();
-	} while (ch == 0);
-
-	if (ch == E0T) return -1;
-     610:	8f ef       	ldi	r24, 0xFF	; 255
-     612:	9f ef       	ldi	r25, 0xFF	; 255
-	else			return (ch);
-}
-     614:	08 95       	ret
-
-00000616 <uart_putchar>:
-	sbi(UCSR0B, RXEN0);
-	sbi(UCSR0B, RXCIE0);
-}
-
-int uart_putchar(char ch, FILE *stream)
-{
-     616:	cf 93       	push	r28
-     618:	c8 2f       	mov	r28, r24
-	if (ch == '\n') uart_putchar('\r', stream);
-     61a:	8a 30       	cpi	r24, 0x0A	; 10
-     61c:	19 f4       	brne	.+6      	; 0x624 <uart_putchar+0xe>
-     61e:	8d e0       	ldi	r24, 0x0D	; 13
-     620:	0e 94 0b 03 	call	0x616	; 0x616 <uart_putchar>
-
-	cli();
-     624:	f8 94       	cli
-	if(!uart_busy) {
-     626:	80 91 3e 03 	lds	r24, 0x033E
-     62a:	88 23       	and	r24, r24
-     62c:	61 f4       	brne	.+24     	; 0x646 <uart_putchar+0x30>
-		UDR0 = ch;
-     62e:	c0 93 c6 00 	sts	0x00C6, r28
-		uart_busy = 1;
-     632:	81 e0       	ldi	r24, 0x01	; 1
-     634:	80 93 3e 03 	sts	0x033E, r24
-     638:	0b c0       	rjmp	.+22     	; 0x650 <uart_putchar+0x3a>
-	}
-	else {
-		while(qo_insert(ch) == 0) {
-			sei();
-     63a:	78 94       	sei
-	#else
-		//round up by default
-		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
-	#endif
-
-	__builtin_avr_delay_cycles(__ticks_dc);
-     63c:	81 e2       	ldi	r24, 0x21	; 33
-     63e:	8a 95       	dec	r24
-     640:	f1 f7       	brne	.-4      	; 0x63e <uart_putchar+0x28>
-     642:	00 00       	nop
-			_delay_us(100);
-			cli();
-     644:	f8 94       	cli
-	if(!uart_busy) {
-		UDR0 = ch;
-		uart_busy = 1;
-	}
-	else {
-		while(qo_insert(ch) == 0) {
-     646:	8c 2f       	mov	r24, r28
-     648:	0e 94 e6 00 	call	0x1cc	; 0x1cc <qo_insert>
-     64c:	00 97       	sbiw	r24, 0x00	; 0
-     64e:	a9 f3       	breq	.-22     	; 0x63a <uart_putchar+0x24>
-			sei();
-			_delay_us(100);
-			cli();
-		}
-	}
-	sei();
-     650:	78 94       	sei
-	return 1;
-}
-     652:	81 e0       	ldi	r24, 0x01	; 1
-     654:	90 e0       	ldi	r25, 0x00	; 0
-     656:	cf 91       	pop	r28
-     658:	08 95       	ret
-
-0000065a <uart_init>:
-FILE Mystdin = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
-char uart_busy;
-
-void uart_init()
-{
-	stdin = &Mystdin; stdout = &Mystdout;
-     65a:	82 e8       	ldi	r24, 0x82	; 130
-     65c:	92 e0       	ldi	r25, 0x02	; 2
-     65e:	90 93 44 03 	sts	0x0344, r25
-     662:	80 93 43 03 	sts	0x0343, r24
-     666:	80 e9       	ldi	r24, 0x90	; 144
-     668:	92 e0       	ldi	r25, 0x02	; 2
-     66a:	90 93 46 03 	sts	0x0346, r25
-     66e:	80 93 45 03 	sts	0x0345, r24
-	q_init();
-     672:	0e 94 96 00 	call	0x12c	; 0x12c <q_init>
-	uart_busy = 0;
-     676:	10 92 3e 03 	sts	0x033E, r1
-
-	UBRR0H = 0x00; UBRR0L = 0x07;
-     67a:	10 92 c5 00 	sts	0x00C5, r1
-     67e:	87 e0       	ldi	r24, 0x07	; 7
-     680:	80 93 c4 00 	sts	0x00C4, r24
-	sbi(UCSR0A, U2X0);
-     684:	e0 ec       	ldi	r30, 0xC0	; 192
-     686:	f0 e0       	ldi	r31, 0x00	; 0
-     688:	80 81       	ld	r24, Z
-     68a:	82 60       	ori	r24, 0x02	; 2
-     68c:	80 83       	st	Z, r24
-	sbi(UCSR0B, TXEN0);
-     68e:	e1 ec       	ldi	r30, 0xC1	; 193
-     690:	f0 e0       	ldi	r31, 0x00	; 0
-     692:	80 81       	ld	r24, Z
-     694:	88 60       	ori	r24, 0x08	; 8
-     696:	80 83       	st	Z, r24
-	sbi(UCSR0B, TXCIE0);
-     698:	80 81       	ld	r24, Z
-     69a:	80 64       	ori	r24, 0x40	; 64
-     69c:	80 83       	st	Z, r24
-	sbi(UCSR0B, RXEN0);
-     69e:	80 81       	ld	r24, Z
-     6a0:	80 61       	ori	r24, 0x10	; 16
-     6a2:	80 83       	st	Z, r24
-	sbi(UCSR0B, RXCIE0);
-     6a4:	80 81       	ld	r24, Z
-     6a6:	80 68       	ori	r24, 0x80	; 128
-     6a8:	80 83       	st	Z, r24
-}
-     6aa:	08 95       	ret
-
-000006ac <uart_echo>:
-	if (ch == E0T) return -1;
-	else			return (ch);
-}
-
-void uart_echo(char ch)
-{
-     6ac:	cf 93       	push	r28
-     6ae:	c8 2f       	mov	r28, r24
-	if (ch == '\n') uart_echo( '\r' );
-     6b0:	8a 30       	cpi	r24, 0x0A	; 10
-     6b2:	19 f4       	brne	.+6      	; 0x6ba <uart_echo+0xe>
-     6b4:	8d e0       	ldi	r24, 0x0D	; 13
-     6b6:	0e 94 56 03 	call	0x6ac	; 0x6ac <uart_echo>
-	if (!uart_busy) {
-     6ba:	80 91 3e 03 	lds	r24, 0x033E
-     6be:	88 23       	and	r24, r24
-     6c0:	31 f4       	brne	.+12     	; 0x6ce <uart_echo+0x22>
-		UDR0 = ch;
-     6c2:	c0 93 c6 00 	sts	0x00C6, r28
-		uart_busy = 1;
-     6c6:	81 e0       	ldi	r24, 0x01	; 1
-     6c8:	80 93 3e 03 	sts	0x033E, r24
-     6cc:	03 c0       	rjmp	.+6      	; 0x6d4 <uart_echo+0x28>
-	}
-	else
-		qo_insert(ch);
-     6ce:	8c 2f       	mov	r24, r28
-     6d0:	0e 94 e6 00 	call	0x1cc	; 0x1cc <qo_insert>
-}
-     6d4:	cf 91       	pop	r28
-     6d6:	08 95       	ret
-
-000006d8 <get_node>:
+0000024a <get_node>:
 
 struct node *get_node()
 {
 	struct node *cp;
 
 	cp = (struct node *)malloc(sizeof(struct node));
-     6d8:	84 e0       	ldi	r24, 0x04	; 4
-     6da:	90 e0       	ldi	r25, 0x00	; 0
-     6dc:	0e 94 2d 05 	call	0xa5a	; 0xa5a <malloc>
+     24a:	84 e0       	ldi	r24, 0x04	; 4
+     24c:	90 e0       	ldi	r25, 0x00	; 0
+     24e:	0e 94 2d 05 	call	0xa5a	; 0xa5a <malloc>
 	return(cp);
 }
-     6e0:	08 95       	ret
+     252:	08 95       	ret
 
-000006e2 <free_node>:
+00000254 <free_node>:
 
 void free_node(struct node *np)
 {
 	free(np);
-     6e2:	0e 94 c3 05 	call	0xb86	; 0xb86 <free>
+     254:	0e 94 c3 05 	call	0xb86	; 0xb86 <free>
 }
-     6e6:	08 95       	ret
+     258:	08 95       	ret
 
-000006e8 <insert_node_head>:
+0000025a <insert_node_head>:
 
 void insert_node_head(struct node *np)
 {
-     6e8:	fc 01       	movw	r30, r24
+     25a:	fc 01       	movw	r30, r24
 	if(!Head) {
-     6ea:	80 91 b2 02 	lds	r24, 0x02B2
-     6ee:	90 91 b3 02 	lds	r25, 0x02B3
-     6f2:	00 97       	sbiw	r24, 0x00	; 0
-     6f4:	39 f4       	brne	.+14     	; 0x704 <insert_node_head+0x1c>
+     25c:	80 91 b0 02 	lds	r24, 0x02B0
+     260:	90 91 b1 02 	lds	r25, 0x02B1
+     264:	00 97       	sbiw	r24, 0x00	; 0
+     266:	39 f4       	brne	.+14     	; 0x276 <insert_node_head+0x1c>
 		Head = np;
-     6f6:	f0 93 b3 02 	sts	0x02B3, r31
-     6fa:	e0 93 b2 02 	sts	0x02B2, r30
+     268:	f0 93 b1 02 	sts	0x02B1, r31
+     26c:	e0 93 b0 02 	sts	0x02B0, r30
 		np -> link = NULL;
-     6fe:	13 82       	std	Z+3, r1	; 0x03
-     700:	12 82       	std	Z+2, r1	; 0x02
-     702:	08 95       	ret
+     270:	13 82       	std	Z+3, r1	; 0x03
+     272:	12 82       	std	Z+2, r1	; 0x02
+     274:	08 95       	ret
 	}
 	else {
 		np -> link = Head;
-     704:	93 83       	std	Z+3, r25	; 0x03
-     706:	82 83       	std	Z+2, r24	; 0x02
+     276:	93 83       	std	Z+3, r25	; 0x03
+     278:	82 83       	std	Z+2, r24	; 0x02
 		Head = np;
-     708:	f0 93 b3 02 	sts	0x02B3, r31
-     70c:	e0 93 b2 02 	sts	0x02B2, r30
-     710:	08 95       	ret
+     27a:	f0 93 b1 02 	sts	0x02B1, r31
+     27e:	e0 93 b0 02 	sts	0x02B0, r30
+     282:	08 95       	ret
 
-00000712 <insert_node_tail>:
+00000284 <insert_node_tail>:
 
 void insert_node_tail(struct node *np)
 {
 	struct node *cp;
 
 	if(!Head)
-     712:	e0 91 b2 02 	lds	r30, 0x02B2
-     716:	f0 91 b3 02 	lds	r31, 0x02B3
-     71a:	30 97       	sbiw	r30, 0x00	; 0
-     71c:	31 f4       	brne	.+12     	; 0x72a <insert_node_tail+0x18>
+     284:	e0 91 b0 02 	lds	r30, 0x02B0
+     288:	f0 91 b1 02 	lds	r31, 0x02B1
+     28c:	30 97       	sbiw	r30, 0x00	; 0
+     28e:	31 f4       	brne	.+12     	; 0x29c <insert_node_tail+0x18>
 		Head = np;
-     71e:	90 93 b3 02 	sts	0x02B3, r25
-     722:	80 93 b2 02 	sts	0x02B2, r24
-     726:	08 c0       	rjmp	.+16     	; 0x738 <insert_node_tail+0x26>
+     290:	90 93 b1 02 	sts	0x02B1, r25
+     294:	80 93 b0 02 	sts	0x02B0, r24
+     298:	08 c0       	rjmp	.+16     	; 0x2aa <insert_node_tail+0x26>
 	else {
 		for (cp = Head; cp->link != NULL; cp = cp->link);
-     728:	f9 01       	movw	r30, r18
-     72a:	22 81       	ldd	r18, Z+2	; 0x02
-     72c:	33 81       	ldd	r19, Z+3	; 0x03
-     72e:	21 15       	cp	r18, r1
-     730:	31 05       	cpc	r19, r1
-     732:	d1 f7       	brne	.-12     	; 0x728 <insert_node_tail+0x16>
+     29a:	f9 01       	movw	r30, r18
+     29c:	22 81       	ldd	r18, Z+2	; 0x02
+     29e:	33 81       	ldd	r19, Z+3	; 0x03
+     2a0:	21 15       	cp	r18, r1
+     2a2:	31 05       	cpc	r19, r1
+     2a4:	d1 f7       	brne	.-12     	; 0x29a <insert_node_tail+0x16>
 		cp -> link = np;
-     734:	93 83       	std	Z+3, r25	; 0x03
-     736:	82 83       	std	Z+2, r24	; 0x02
+     2a6:	93 83       	std	Z+3, r25	; 0x03
+     2a8:	82 83       	std	Z+2, r24	; 0x02
 	}
 	np -> link = NULL;
-     738:	fc 01       	movw	r30, r24
-     73a:	13 82       	std	Z+3, r1	; 0x03
-     73c:	12 82       	std	Z+2, r1	; 0x02
+     2aa:	fc 01       	movw	r30, r24
+     2ac:	13 82       	std	Z+3, r1	; 0x03
+     2ae:	12 82       	std	Z+2, r1	; 0x02
 }
-     73e:	08 95       	ret
+     2b0:	08 95       	ret
 
-00000740 <insert_node_ascn>:
+000002b2 <insert_node_ascn>:
 
 void insert_node_ascn(struct node *np)
 {
-     740:	cf 93       	push	r28
-     742:	df 93       	push	r29
-     744:	fc 01       	movw	r30, r24
+     2b2:	cf 93       	push	r28
+     2b4:	df 93       	push	r29
+     2b6:	fc 01       	movw	r30, r24
 	struct node *cp, *pp;
 	if(!Head) {
-     746:	20 91 b2 02 	lds	r18, 0x02B2
-     74a:	30 91 b3 02 	lds	r19, 0x02B3
-     74e:	21 15       	cp	r18, r1
-     750:	31 05       	cpc	r19, r1
-     752:	31 f0       	breq	.+12     	; 0x760 <insert_node_ascn+0x20>
+     2b8:	20 91 b0 02 	lds	r18, 0x02B0
+     2bc:	30 91 b1 02 	lds	r19, 0x02B1
+     2c0:	21 15       	cp	r18, r1
+     2c2:	31 05       	cpc	r19, r1
+     2c4:	31 f0       	breq	.+12     	; 0x2d2 <insert_node_ascn+0x20>
 		Head = np;
 		np -> link = NULL;
 	}
 	else {
 		for (cp = Head, pp = NULL; cp != NULL && cp -> data < np->data;
-     754:	40 81       	ld	r20, Z
-     756:	51 81       	ldd	r21, Z+1	; 0x01
-     758:	d9 01       	movw	r26, r18
-     75a:	c0 e0       	ldi	r28, 0x00	; 0
-     75c:	d0 e0       	ldi	r29, 0x00	; 0
-     75e:	0f c0       	rjmp	.+30     	; 0x77e <insert_node_ascn+0x3e>
+     2c6:	40 81       	ld	r20, Z
+     2c8:	51 81       	ldd	r21, Z+1	; 0x01
+     2ca:	d9 01       	movw	r26, r18
+     2cc:	c0 e0       	ldi	r28, 0x00	; 0
+     2ce:	d0 e0       	ldi	r29, 0x00	; 0
+     2d0:	0f c0       	rjmp	.+30     	; 0x2f0 <insert_node_ascn+0x3e>
 
 void insert_node_ascn(struct node *np)
 {
 	struct node *cp, *pp;
 	if(!Head) {
 		Head = np;
-     760:	90 93 b3 02 	sts	0x02B3, r25
-     764:	80 93 b2 02 	sts	0x02B2, r24
+     2d2:	90 93 b1 02 	sts	0x02B1, r25
+     2d6:	80 93 b0 02 	sts	0x02B0, r24
 		np -> link = NULL;
-     768:	13 82       	std	Z+3, r1	; 0x03
-     76a:	12 82       	std	Z+2, r1	; 0x02
-     76c:	1d c0       	rjmp	.+58     	; 0x7a8 <insert_node_ascn+0x68>
+     2da:	13 82       	std	Z+3, r1	; 0x03
+     2dc:	12 82       	std	Z+2, r1	; 0x02
+     2de:	1d c0       	rjmp	.+58     	; 0x31a <insert_node_ascn+0x68>
 	}
 	else {
 		for (cp = Head, pp = NULL; cp != NULL && cp -> data < np->data;
 		pp = cp, cp = cp->link);
-     76e:	12 96       	adiw	r26, 0x02	; 2
-     770:	8d 91       	ld	r24, X+
-     772:	9c 91       	ld	r25, X
-     774:	13 97       	sbiw	r26, 0x03	; 3
+     2e0:	12 96       	adiw	r26, 0x02	; 2
+     2e2:	8d 91       	ld	r24, X+
+     2e4:	9c 91       	ld	r25, X
+     2e6:	13 97       	sbiw	r26, 0x03	; 3
 	if(!Head) {
 		Head = np;
 		np -> link = NULL;
 	}
 	else {
 		for (cp = Head, pp = NULL; cp != NULL && cp -> data < np->data;
-     776:	ed 01       	movw	r28, r26
-     778:	00 97       	sbiw	r24, 0x00	; 0
-     77a:	39 f0       	breq	.+14     	; 0x78a <insert_node_ascn+0x4a>
+     2e8:	ed 01       	movw	r28, r26
+     2ea:	00 97       	sbiw	r24, 0x00	; 0
+     2ec:	39 f0       	breq	.+14     	; 0x2fc <insert_node_ascn+0x4a>
 		pp = cp, cp = cp->link);
-     77c:	dc 01       	movw	r26, r24
+     2ee:	dc 01       	movw	r26, r24
 	if(!Head) {
 		Head = np;
 		np -> link = NULL;
 	}
 	else {
 		for (cp = Head, pp = NULL; cp != NULL && cp -> data < np->data;
-     77e:	8d 91       	ld	r24, X+
-     780:	9c 91       	ld	r25, X
-     782:	11 97       	sbiw	r26, 0x01	; 1
-     784:	84 17       	cp	r24, r20
-     786:	95 07       	cpc	r25, r21
-     788:	94 f3       	brlt	.-28     	; 0x76e <insert_node_ascn+0x2e>
+     2f0:	8d 91       	ld	r24, X+
+     2f2:	9c 91       	ld	r25, X
+     2f4:	11 97       	sbiw	r26, 0x01	; 1
+     2f6:	84 17       	cp	r24, r20
+     2f8:	95 07       	cpc	r25, r21
+     2fa:	94 f3       	brlt	.-28     	; 0x2e0 <insert_node_ascn+0x2e>
 		pp = cp, cp = cp->link);
 		
 		if(pp == NULL) {
-     78a:	20 97       	sbiw	r28, 0x00	; 0
-     78c:	39 f4       	brne	.+14     	; 0x79c <insert_node_ascn+0x5c>
+     2fc:	20 97       	sbiw	r28, 0x00	; 0
+     2fe:	39 f4       	brne	.+14     	; 0x30e <insert_node_ascn+0x5c>
 			np -> link = Head;
-     78e:	33 83       	std	Z+3, r19	; 0x03
-     790:	22 83       	std	Z+2, r18	; 0x02
+     300:	33 83       	std	Z+3, r19	; 0x03
+     302:	22 83       	std	Z+2, r18	; 0x02
 			Head = np;
-     792:	f0 93 b3 02 	sts	0x02B3, r31
-     796:	e0 93 b2 02 	sts	0x02B2, r30
-     79a:	06 c0       	rjmp	.+12     	; 0x7a8 <insert_node_ascn+0x68>
+     304:	f0 93 b1 02 	sts	0x02B1, r31
+     308:	e0 93 b0 02 	sts	0x02B0, r30
+     30c:	06 c0       	rjmp	.+12     	; 0x31a <insert_node_ascn+0x68>
 		} else {
 			np -> link = pp -> link;
-     79c:	8a 81       	ldd	r24, Y+2	; 0x02
-     79e:	9b 81       	ldd	r25, Y+3	; 0x03
-     7a0:	93 83       	std	Z+3, r25	; 0x03
-     7a2:	82 83       	std	Z+2, r24	; 0x02
+     30e:	8a 81       	ldd	r24, Y+2	; 0x02
+     310:	9b 81       	ldd	r25, Y+3	; 0x03
+     312:	93 83       	std	Z+3, r25	; 0x03
+     314:	82 83       	std	Z+2, r24	; 0x02
 			pp -> link = np;
-     7a4:	fb 83       	std	Y+3, r31	; 0x03
-     7a6:	ea 83       	std	Y+2, r30	; 0x02
+     316:	fb 83       	std	Y+3, r31	; 0x03
+     318:	ea 83       	std	Y+2, r30	; 0x02
 		}
 	}
 }
-     7a8:	df 91       	pop	r29
-     7aa:	cf 91       	pop	r28
-     7ac:	08 95       	ret
+     31a:	df 91       	pop	r29
+     31c:	cf 91       	pop	r28
+     31e:	08 95       	ret
 
-000007ae <insert_node_desc>:
+00000320 <insert_node_desc>:
 
 void insert_node_desc(struct node *np) {
-     7ae:	cf 93       	push	r28
-     7b0:	df 93       	push	r29
-     7b2:	fc 01       	movw	r30, r24
+     320:	cf 93       	push	r28
+     322:	df 93       	push	r29
+     324:	fc 01       	movw	r30, r24
    struct node *cp, *pp;
 
    if(!Head) {
-     7b4:	20 91 b2 02 	lds	r18, 0x02B2
-     7b8:	30 91 b3 02 	lds	r19, 0x02B3
-     7bc:	21 15       	cp	r18, r1
-     7be:	31 05       	cpc	r19, r1
-     7c0:	31 f0       	breq	.+12     	; 0x7ce <insert_node_desc+0x20>
+     326:	20 91 b0 02 	lds	r18, 0x02B0
+     32a:	30 91 b1 02 	lds	r19, 0x02B1
+     32e:	21 15       	cp	r18, r1
+     330:	31 05       	cpc	r19, r1
+     332:	31 f0       	breq	.+12     	; 0x340 <insert_node_desc+0x20>
       Head = np;
       np->link = NULL;
    } else {
       for(cp = Head, pp = NULL; cp != NULL && cp->data > np->data; pp = cp, cp = cp->link);
-     7c2:	40 81       	ld	r20, Z
-     7c4:	51 81       	ldd	r21, Z+1	; 0x01
-     7c6:	d9 01       	movw	r26, r18
-     7c8:	c0 e0       	ldi	r28, 0x00	; 0
-     7ca:	d0 e0       	ldi	r29, 0x00	; 0
-     7cc:	0f c0       	rjmp	.+30     	; 0x7ec <insert_node_desc+0x3e>
+     334:	40 81       	ld	r20, Z
+     336:	51 81       	ldd	r21, Z+1	; 0x01
+     338:	d9 01       	movw	r26, r18
+     33a:	c0 e0       	ldi	r28, 0x00	; 0
+     33c:	d0 e0       	ldi	r29, 0x00	; 0
+     33e:	0f c0       	rjmp	.+30     	; 0x35e <insert_node_desc+0x3e>
 
 void insert_node_desc(struct node *np) {
    struct node *cp, *pp;
 
    if(!Head) {
       Head = np;
-     7ce:	90 93 b3 02 	sts	0x02B3, r25
-     7d2:	80 93 b2 02 	sts	0x02B2, r24
+     340:	90 93 b1 02 	sts	0x02B1, r25
+     344:	80 93 b0 02 	sts	0x02B0, r24
       np->link = NULL;
-     7d6:	13 82       	std	Z+3, r1	; 0x03
-     7d8:	12 82       	std	Z+2, r1	; 0x02
-     7da:	1d c0       	rjmp	.+58     	; 0x816 <insert_node_desc+0x68>
+     348:	13 82       	std	Z+3, r1	; 0x03
+     34a:	12 82       	std	Z+2, r1	; 0x02
+     34c:	1d c0       	rjmp	.+58     	; 0x388 <insert_node_desc+0x68>
    } else {
       for(cp = Head, pp = NULL; cp != NULL && cp->data > np->data; pp = cp, cp = cp->link);
-     7dc:	12 96       	adiw	r26, 0x02	; 2
-     7de:	8d 91       	ld	r24, X+
-     7e0:	9c 91       	ld	r25, X
-     7e2:	13 97       	sbiw	r26, 0x03	; 3
-     7e4:	ed 01       	movw	r28, r26
-     7e6:	00 97       	sbiw	r24, 0x00	; 0
-     7e8:	39 f0       	breq	.+14     	; 0x7f8 <insert_node_desc+0x4a>
-     7ea:	dc 01       	movw	r26, r24
-     7ec:	8d 91       	ld	r24, X+
-     7ee:	9c 91       	ld	r25, X
-     7f0:	11 97       	sbiw	r26, 0x01	; 1
-     7f2:	48 17       	cp	r20, r24
-     7f4:	59 07       	cpc	r21, r25
-     7f6:	94 f3       	brlt	.-28     	; 0x7dc <insert_node_desc+0x2e>
+     34e:	12 96       	adiw	r26, 0x02	; 2
+     350:	8d 91       	ld	r24, X+
+     352:	9c 91       	ld	r25, X
+     354:	13 97       	sbiw	r26, 0x03	; 3
+     356:	ed 01       	movw	r28, r26
+     358:	00 97       	sbiw	r24, 0x00	; 0
+     35a:	39 f0       	breq	.+14     	; 0x36a <insert_node_desc+0x4a>
+     35c:	dc 01       	movw	r26, r24
+     35e:	8d 91       	ld	r24, X+
+     360:	9c 91       	ld	r25, X
+     362:	11 97       	sbiw	r26, 0x01	; 1
+     364:	48 17       	cp	r20, r24
+     366:	59 07       	cpc	r21, r25
+     368:	94 f3       	brlt	.-28     	; 0x34e <insert_node_desc+0x2e>
 
       if(pp == NULL) {
-     7f8:	20 97       	sbiw	r28, 0x00	; 0
-     7fa:	39 f4       	brne	.+14     	; 0x80a <insert_node_desc+0x5c>
+     36a:	20 97       	sbiw	r28, 0x00	; 0
+     36c:	39 f4       	brne	.+14     	; 0x37c <insert_node_desc+0x5c>
          np->link = Head;
-     7fc:	33 83       	std	Z+3, r19	; 0x03
-     7fe:	22 83       	std	Z+2, r18	; 0x02
+     36e:	33 83       	std	Z+3, r19	; 0x03
+     370:	22 83       	std	Z+2, r18	; 0x02
          Head = np;
-     800:	f0 93 b3 02 	sts	0x02B3, r31
-     804:	e0 93 b2 02 	sts	0x02B2, r30
-     808:	06 c0       	rjmp	.+12     	; 0x816 <insert_node_desc+0x68>
+     372:	f0 93 b1 02 	sts	0x02B1, r31
+     376:	e0 93 b0 02 	sts	0x02B0, r30
+     37a:	06 c0       	rjmp	.+12     	; 0x388 <insert_node_desc+0x68>
       } else {
          np->link = pp->link;
-     80a:	8a 81       	ldd	r24, Y+2	; 0x02
-     80c:	9b 81       	ldd	r25, Y+3	; 0x03
-     80e:	93 83       	std	Z+3, r25	; 0x03
-     810:	82 83       	std	Z+2, r24	; 0x02
+     37c:	8a 81       	ldd	r24, Y+2	; 0x02
+     37e:	9b 81       	ldd	r25, Y+3	; 0x03
+     380:	93 83       	std	Z+3, r25	; 0x03
+     382:	82 83       	std	Z+2, r24	; 0x02
          pp->link = np;
-     812:	fb 83       	std	Y+3, r31	; 0x03
-     814:	ea 83       	std	Y+2, r30	; 0x02
+     384:	fb 83       	std	Y+3, r31	; 0x03
+     386:	ea 83       	std	Y+2, r30	; 0x02
       }
    }
 }
-     816:	df 91       	pop	r29
-     818:	cf 91       	pop	r28
-     81a:	08 95       	ret
+     388:	df 91       	pop	r29
+     38a:	cf 91       	pop	r28
+     38c:	08 95       	ret
 
-0000081c <tour_list>:
-
-void tour_list() {
-     81c:	0f 93       	push	r16
-     81e:	1f 93       	push	r17
-     820:	cf 93       	push	r28
-     822:	df 93       	push	r29
-	struct node *cp;
-	printf("\n");
-     824:	8a e0       	ldi	r24, 0x0A	; 10
-     826:	90 e0       	ldi	r25, 0x00	; 0
-     828:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
-	
-	for ( cp = Head; cp != NULL; cp = cp-> link)
-     82c:	c0 91 b2 02 	lds	r28, 0x02B2
-     830:	d0 91 b3 02 	lds	r29, 0x02B3
-		printf("-->%c ", cp-> data);
-     834:	0e e9       	ldi	r16, 0x9E	; 158
-     836:	12 e0       	ldi	r17, 0x02	; 2
+0000038e <tour_list>:
 
 void tour_list() {
+     38e:	0f 93       	push	r16
+     390:	1f 93       	push	r17
+     392:	cf 93       	push	r28
+     394:	df 93       	push	r29
 	struct node *cp;
 	printf("\n");
+     396:	8a e0       	ldi	r24, 0x0A	; 10
+     398:	90 e0       	ldi	r25, 0x00	; 0
+     39a:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
 	
 	for ( cp = Head; cp != NULL; cp = cp-> link)
-     838:	13 c0       	rjmp	.+38     	; 0x860 <tour_list+0x44>
+     39e:	c0 91 b0 02 	lds	r28, 0x02B0
+     3a2:	d0 91 b1 02 	lds	r29, 0x02B1
 		printf("-->%c ", cp-> data);
-     83a:	00 d0       	rcall	.+0      	; 0x83c <tour_list+0x20>
-     83c:	0f 92       	push	r0
-     83e:	ed b7       	in	r30, 0x3d	; 61
-     840:	fe b7       	in	r31, 0x3e	; 62
-     842:	12 83       	std	Z+2, r17	; 0x02
-     844:	01 83       	std	Z+1, r16	; 0x01
-     846:	88 81       	ld	r24, Y
-     848:	99 81       	ldd	r25, Y+1	; 0x01
-     84a:	94 83       	std	Z+4, r25	; 0x04
-     84c:	83 83       	std	Z+3, r24	; 0x03
-     84e:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
+     3a6:	00 e0       	ldi	r16, 0x00	; 0
+     3a8:	12 e0       	ldi	r17, 0x02	; 2
 
 void tour_list() {
 	struct node *cp;
 	printf("\n");
 	
 	for ( cp = Head; cp != NULL; cp = cp-> link)
-     852:	0a 80       	ldd	r0, Y+2	; 0x02
-     854:	db 81       	ldd	r29, Y+3	; 0x03
-     856:	c0 2d       	mov	r28, r0
-     858:	0f 90       	pop	r0
-     85a:	0f 90       	pop	r0
-     85c:	0f 90       	pop	r0
-     85e:	0f 90       	pop	r0
-     860:	20 97       	sbiw	r28, 0x00	; 0
-     862:	59 f7       	brne	.-42     	; 0x83a <tour_list+0x1e>
+     3aa:	13 c0       	rjmp	.+38     	; 0x3d2 <tour_list+0x44>
+		printf("-->%c ", cp-> data);
+     3ac:	00 d0       	rcall	.+0      	; 0x3ae <tour_list+0x20>
+     3ae:	0f 92       	push	r0
+     3b0:	ed b7       	in	r30, 0x3d	; 61
+     3b2:	fe b7       	in	r31, 0x3e	; 62
+     3b4:	12 83       	std	Z+2, r17	; 0x02
+     3b6:	01 83       	std	Z+1, r16	; 0x01
+     3b8:	88 81       	ld	r24, Y
+     3ba:	99 81       	ldd	r25, Y+1	; 0x01
+     3bc:	94 83       	std	Z+4, r25	; 0x04
+     3be:	83 83       	std	Z+3, r24	; 0x03
+     3c0:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
+
+void tour_list() {
+	struct node *cp;
+	printf("\n");
+	
+	for ( cp = Head; cp != NULL; cp = cp-> link)
+     3c4:	0a 80       	ldd	r0, Y+2	; 0x02
+     3c6:	db 81       	ldd	r29, Y+3	; 0x03
+     3c8:	c0 2d       	mov	r28, r0
+     3ca:	0f 90       	pop	r0
+     3cc:	0f 90       	pop	r0
+     3ce:	0f 90       	pop	r0
+     3d0:	0f 90       	pop	r0
+     3d2:	20 97       	sbiw	r28, 0x00	; 0
+     3d4:	59 f7       	brne	.-42     	; 0x3ac <tour_list+0x1e>
 		printf("-->%c ", cp-> data);
 	printf("\n");
-     864:	8a e0       	ldi	r24, 0x0A	; 10
-     866:	90 e0       	ldi	r25, 0x00	; 0
-     868:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
+     3d6:	8a e0       	ldi	r24, 0x0A	; 10
+     3d8:	90 e0       	ldi	r25, 0x00	; 0
+     3da:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
 }
-     86c:	df 91       	pop	r29
-     86e:	cf 91       	pop	r28
-     870:	1f 91       	pop	r17
-     872:	0f 91       	pop	r16
-     874:	08 95       	ret
+     3de:	df 91       	pop	r29
+     3e0:	cf 91       	pop	r28
+     3e2:	1f 91       	pop	r17
+     3e4:	0f 91       	pop	r16
+     3e6:	08 95       	ret
 
-00000876 <free_list>:
+000003e8 <free_list>:
 
 void free_list()
 {
 	struct node *cp;
 	
 	for(; Head != NULL; ) {
-     876:	09 c0       	rjmp	.+18     	; 0x88a <free_list+0x14>
+     3e8:	09 c0       	rjmp	.+18     	; 0x3fc <free_list+0x14>
 		cp = Head;
 		Head = cp->link;
-     878:	fc 01       	movw	r30, r24
-     87a:	22 81       	ldd	r18, Z+2	; 0x02
-     87c:	33 81       	ldd	r19, Z+3	; 0x03
-     87e:	30 93 b3 02 	sts	0x02B3, r19
-     882:	20 93 b2 02 	sts	0x02B2, r18
+     3ea:	fc 01       	movw	r30, r24
+     3ec:	22 81       	ldd	r18, Z+2	; 0x02
+     3ee:	33 81       	ldd	r19, Z+3	; 0x03
+     3f0:	30 93 b1 02 	sts	0x02B1, r19
+     3f4:	20 93 b0 02 	sts	0x02B0, r18
 	return(cp);
 }
 
 void free_node(struct node *np)
 {
 	free(np);
-     886:	0e 94 c3 05 	call	0xb86	; 0xb86 <free>
+     3f8:	0e 94 c3 05 	call	0xb86	; 0xb86 <free>
 
 void free_list()
 {
 	struct node *cp;
 	
 	for(; Head != NULL; ) {
-     88a:	80 91 b2 02 	lds	r24, 0x02B2
-     88e:	90 91 b3 02 	lds	r25, 0x02B3
-     892:	00 97       	sbiw	r24, 0x00	; 0
-     894:	89 f7       	brne	.-30     	; 0x878 <free_list+0x2>
+     3fc:	80 91 b0 02 	lds	r24, 0x02B0
+     400:	90 91 b1 02 	lds	r25, 0x02B1
+     404:	00 97       	sbiw	r24, 0x00	; 0
+     406:	89 f7       	brne	.-30     	; 0x3ea <free_list+0x2>
 		cp = Head;
 		Head = cp->link;
 		free_node(cp);
 	}
 }	
-     896:	08 95       	ret
+     408:	08 95       	ret
 
-00000898 <app_list>:
+0000040a <app_list>:
 
 void app_list(char *ap)
 {
-     898:	ef 92       	push	r14
-     89a:	ff 92       	push	r15
-     89c:	1f 93       	push	r17
-     89e:	cf 93       	push	r28
-     8a0:	df 93       	push	r29
-     8a2:	cd b7       	in	r28, 0x3d	; 61
-     8a4:	de b7       	in	r29, 0x3e	; 62
-     8a6:	28 97       	sbiw	r28, 0x08	; 8
-     8a8:	0f b6       	in	r0, 0x3f	; 63
-     8aa:	f8 94       	cli
-     8ac:	de bf       	out	0x3e, r29	; 62
-     8ae:	0f be       	out	0x3f, r0	; 63
-     8b0:	cd bf       	out	0x3d, r28	; 61
+     40a:	ef 92       	push	r14
+     40c:	ff 92       	push	r15
+     40e:	1f 93       	push	r17
+     410:	cf 93       	push	r28
+     412:	df 93       	push	r29
+     414:	cd b7       	in	r28, 0x3d	; 61
+     416:	de b7       	in	r29, 0x3e	; 62
+     418:	28 97       	sbiw	r28, 0x08	; 8
+     41a:	0f b6       	in	r0, 0x3f	; 63
+     41c:	f8 94       	cli
+     41e:	de bf       	out	0x3e, r29	; 62
+     420:	0f be       	out	0x3f, r0	; 63
+     422:	cd bf       	out	0x3d, r28	; 61
 	char buf[8], how = 'a' ;
 	struct node *np;
 
 	if (ap) how = *ap;
-     8b2:	00 97       	sbiw	r24, 0x00	; 0
-     8b4:	19 f0       	breq	.+6      	; 0x8bc <app_list+0x24>
-     8b6:	fc 01       	movw	r30, r24
-     8b8:	10 81       	ld	r17, Z
-     8ba:	01 c0       	rjmp	.+2      	; 0x8be <app_list+0x26>
+     424:	00 97       	sbiw	r24, 0x00	; 0
+     426:	19 f0       	breq	.+6      	; 0x42e <app_list+0x24>
+     428:	fc 01       	movw	r30, r24
+     42a:	10 81       	ld	r17, Z
+     42c:	01 c0       	rjmp	.+2      	; 0x430 <app_list+0x26>
 	}
 }	
 
 void app_list(char *ap)
 {
 	char buf[8], how = 'a' ;
-     8bc:	11 e6       	ldi	r17, 0x61	; 97
+     42e:	11 e6       	ldi	r17, 0x61	; 97
 	struct node *np;
 
 	if (ap) how = *ap;
 	while(1) {
 		printf( " > ");
-     8be:	85 ea       	ldi	r24, 0xA5	; 165
-     8c0:	e8 2e       	mov	r14, r24
-     8c2:	82 e0       	ldi	r24, 0x02	; 2
-     8c4:	f8 2e       	mov	r15, r24
-     8c6:	0f 92       	push	r0
-     8c8:	0f 92       	push	r0
-     8ca:	ed b7       	in	r30, 0x3d	; 61
-     8cc:	fe b7       	in	r31, 0x3e	; 62
-     8ce:	f2 82       	std	Z+2, r15	; 0x02
-     8d0:	e1 82       	std	Z+1, r14	; 0x01
-     8d2:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
+     430:	87 e0       	ldi	r24, 0x07	; 7
+     432:	e8 2e       	mov	r14, r24
+     434:	82 e0       	ldi	r24, 0x02	; 2
+     436:	f8 2e       	mov	r15, r24
+     438:	0f 92       	push	r0
+     43a:	0f 92       	push	r0
+     43c:	ed b7       	in	r30, 0x3d	; 61
+     43e:	fe b7       	in	r31, 0x3e	; 62
+     440:	f2 82       	std	Z+2, r15	; 0x02
+     442:	e1 82       	std	Z+1, r14	; 0x01
+     444:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
 		if(fgets(buf, 8, stdin) == NULL)
-     8d6:	0f 90       	pop	r0
-     8d8:	0f 90       	pop	r0
-     8da:	40 91 43 03 	lds	r20, 0x0343
-     8de:	50 91 44 03 	lds	r21, 0x0344
-     8e2:	ce 01       	movw	r24, r28
-     8e4:	01 96       	adiw	r24, 0x01	; 1
-     8e6:	68 e0       	ldi	r22, 0x08	; 8
-     8e8:	70 e0       	ldi	r23, 0x00	; 0
-     8ea:	0e 94 b7 06 	call	0xd6e	; 0xd6e <fgets>
-     8ee:	00 97       	sbiw	r24, 0x00	; 0
-     8f0:	c9 f0       	breq	.+50     	; 0x924 <app_list+0x8c>
+     448:	0f 90       	pop	r0
+     44a:	0f 90       	pop	r0
+     44c:	40 91 43 03 	lds	r20, 0x0343
+     450:	50 91 44 03 	lds	r21, 0x0344
+     454:	ce 01       	movw	r24, r28
+     456:	01 96       	adiw	r24, 0x01	; 1
+     458:	68 e0       	ldi	r22, 0x08	; 8
+     45a:	70 e0       	ldi	r23, 0x00	; 0
+     45c:	0e 94 b7 06 	call	0xd6e	; 0xd6e <fgets>
+     460:	00 97       	sbiw	r24, 0x00	; 0
+     462:	c9 f0       	breq	.+50     	; 0x496 <app_list+0x8c>
 			break;
 		np = get_node();
-     8f2:	0e 94 6c 03 	call	0x6d8	; 0x6d8 <get_node>
+     464:	0e 94 25 01 	call	0x24a	; 0x24a <get_node>
 		np -> data = buf[0];
-     8f6:	29 81       	ldd	r18, Y+1	; 0x01
-     8f8:	fc 01       	movw	r30, r24
-     8fa:	20 83       	st	Z, r18
-     8fc:	11 82       	std	Z+1, r1	; 0x01
+     468:	29 81       	ldd	r18, Y+1	; 0x01
+     46a:	fc 01       	movw	r30, r24
+     46c:	20 83       	st	Z, r18
+     46e:	11 82       	std	Z+1, r1	; 0x01
 		switch(how) {
-     8fe:	18 36       	cpi	r17, 0x68	; 104
-     900:	29 f0       	breq	.+10     	; 0x90c <app_list+0x74>
-     902:	14 37       	cpi	r17, 0x74	; 116
-     904:	31 f0       	breq	.+12     	; 0x912 <app_list+0x7a>
-     906:	14 36       	cpi	r17, 0x64	; 100
-     908:	51 f4       	brne	.+20     	; 0x91e <app_list+0x86>
-     90a:	06 c0       	rjmp	.+12     	; 0x918 <app_list+0x80>
+     470:	18 36       	cpi	r17, 0x68	; 104
+     472:	29 f0       	breq	.+10     	; 0x47e <app_list+0x74>
+     474:	14 37       	cpi	r17, 0x74	; 116
+     476:	31 f0       	breq	.+12     	; 0x484 <app_list+0x7a>
+     478:	14 36       	cpi	r17, 0x64	; 100
+     47a:	51 f4       	brne	.+20     	; 0x490 <app_list+0x86>
+     47c:	06 c0       	rjmp	.+12     	; 0x48a <app_list+0x80>
 			case 'h' : insert_node_head(np); break;
-     90c:	0e 94 74 03 	call	0x6e8	; 0x6e8 <insert_node_head>
-     910:	da cf       	rjmp	.-76     	; 0x8c6 <app_list+0x2e>
+     47e:	0e 94 2d 01 	call	0x25a	; 0x25a <insert_node_head>
+     482:	da cf       	rjmp	.-76     	; 0x438 <app_list+0x2e>
 			case 't' : insert_node_tail(np); break;
-     912:	0e 94 89 03 	call	0x712	; 0x712 <insert_node_tail>
-     916:	d7 cf       	rjmp	.-82     	; 0x8c6 <app_list+0x2e>
+     484:	0e 94 42 01 	call	0x284	; 0x284 <insert_node_tail>
+     488:	d7 cf       	rjmp	.-82     	; 0x438 <app_list+0x2e>
 			case 'd' : insert_node_desc(np); break;
-     918:	0e 94 d7 03 	call	0x7ae	; 0x7ae <insert_node_desc>
-     91c:	d4 cf       	rjmp	.-88     	; 0x8c6 <app_list+0x2e>
+     48a:	0e 94 90 01 	call	0x320	; 0x320 <insert_node_desc>
+     48e:	d4 cf       	rjmp	.-88     	; 0x438 <app_list+0x2e>
 			default : insert_node_ascn(np);
-     91e:	0e 94 a0 03 	call	0x740	; 0x740 <insert_node_ascn>
-     922:	d1 cf       	rjmp	.-94     	; 0x8c6 <app_list+0x2e>
+     490:	0e 94 59 01 	call	0x2b2	; 0x2b2 <insert_node_ascn>
+     494:	d1 cf       	rjmp	.-94     	; 0x438 <app_list+0x2e>
 		}
 	}
 	tour_list();
-     924:	0e 94 0e 04 	call	0x81c	; 0x81c <tour_list>
+     496:	0e 94 c7 01 	call	0x38e	; 0x38e <tour_list>
 	free_list();
-     928:	0e 94 3b 04 	call	0x876	; 0x876 <free_list>
+     49a:	0e 94 f4 01 	call	0x3e8	; 0x3e8 <free_list>
 }
-     92c:	28 96       	adiw	r28, 0x08	; 8
-     92e:	0f b6       	in	r0, 0x3f	; 63
-     930:	f8 94       	cli
-     932:	de bf       	out	0x3e, r29	; 62
-     934:	0f be       	out	0x3f, r0	; 63
-     936:	cd bf       	out	0x3d, r28	; 61
-     938:	df 91       	pop	r29
-     93a:	cf 91       	pop	r28
-     93c:	1f 91       	pop	r17
-     93e:	ff 90       	pop	r15
-     940:	ef 90       	pop	r14
+     49e:	28 96       	adiw	r28, 0x08	; 8
+     4a0:	0f b6       	in	r0, 0x3f	; 63
+     4a2:	f8 94       	cli
+     4a4:	de bf       	out	0x3e, r29	; 62
+     4a6:	0f be       	out	0x3f, r0	; 63
+     4a8:	cd bf       	out	0x3d, r28	; 61
+     4aa:	df 91       	pop	r29
+     4ac:	cf 91       	pop	r28
+     4ae:	1f 91       	pop	r17
+     4b0:	ff 90       	pop	r15
+     4b2:	ef 90       	pop	r14
+     4b4:	08 95       	ret
+
+000004b6 <__vector_27>:
+	printf( "logout, good bye !!!\n");
+	while(1); return 0;
+}
+
+ISR(USART0_TX_vect)
+{
+     4b6:	1f 92       	push	r1
+     4b8:	0f 92       	push	r0
+     4ba:	0f b6       	in	r0, 0x3f	; 63
+     4bc:	0f 92       	push	r0
+     4be:	0b b6       	in	r0, 0x3b	; 59
+     4c0:	0f 92       	push	r0
+     4c2:	11 24       	eor	r1, r1
+     4c4:	2f 93       	push	r18
+     4c6:	3f 93       	push	r19
+     4c8:	4f 93       	push	r20
+     4ca:	5f 93       	push	r21
+     4cc:	6f 93       	push	r22
+     4ce:	7f 93       	push	r23
+     4d0:	8f 93       	push	r24
+     4d2:	9f 93       	push	r25
+     4d4:	af 93       	push	r26
+     4d6:	bf 93       	push	r27
+     4d8:	ef 93       	push	r30
+     4da:	ff 93       	push	r31
+	char	ch;
+
+	if((ch = qo_delete()) == 0)
+     4dc:	0e 94 08 01 	call	0x210	; 0x210 <qo_delete>
+     4e0:	88 23       	and	r24, r24
+     4e2:	19 f4       	brne	.+6      	; 0x4ea <__vector_27+0x34>
+		uart_busy = 0;
+     4e4:	10 92 3e 03 	sts	0x033E, r1
+     4e8:	02 c0       	rjmp	.+4      	; 0x4ee <__vector_27+0x38>
+	else
+		UDR0 = ch;
+     4ea:	80 93 c6 00 	sts	0x00C6, r24
+}
+     4ee:	ff 91       	pop	r31
+     4f0:	ef 91       	pop	r30
+     4f2:	bf 91       	pop	r27
+     4f4:	af 91       	pop	r26
+     4f6:	9f 91       	pop	r25
+     4f8:	8f 91       	pop	r24
+     4fa:	7f 91       	pop	r23
+     4fc:	6f 91       	pop	r22
+     4fe:	5f 91       	pop	r21
+     500:	4f 91       	pop	r20
+     502:	3f 91       	pop	r19
+     504:	2f 91       	pop	r18
+     506:	0f 90       	pop	r0
+     508:	0b be       	out	0x3b, r0	; 59
+     50a:	0f 90       	pop	r0
+     50c:	0f be       	out	0x3f, r0	; 63
+     50e:	0f 90       	pop	r0
+     510:	1f 90       	pop	r1
+     512:	18 95       	reti
+
+00000514 <__vector_25>:
+
+ISR(USART0_RX_vect)
+{
+     514:	1f 92       	push	r1
+     516:	0f 92       	push	r0
+     518:	0f b6       	in	r0, 0x3f	; 63
+     51a:	0f 92       	push	r0
+     51c:	0b b6       	in	r0, 0x3b	; 59
+     51e:	0f 92       	push	r0
+     520:	11 24       	eor	r1, r1
+     522:	2f 93       	push	r18
+     524:	3f 93       	push	r19
+     526:	4f 93       	push	r20
+     528:	5f 93       	push	r21
+     52a:	6f 93       	push	r22
+     52c:	7f 93       	push	r23
+     52e:	8f 93       	push	r24
+     530:	9f 93       	push	r25
+     532:	af 93       	push	r26
+     534:	bf 93       	push	r27
+     536:	cf 93       	push	r28
+     538:	ef 93       	push	r30
+     53a:	ff 93       	push	r31
+	char ch;
+
+	ch = UDR0;
+     53c:	c0 91 c6 00 	lds	r28, 0x00C6
+	if ( ch != E0T) {
+     540:	c4 30       	cpi	r28, 0x04	; 4
+     542:	31 f0       	breq	.+12     	; 0x550 <__vector_25+0x3c>
+		if(ch == '\r') ch = '\n';
+     544:	cd 30       	cpi	r28, 0x0D	; 13
+     546:	09 f4       	brne	.+2      	; 0x54a <__vector_25+0x36>
+     548:	ca e0       	ldi	r28, 0x0A	; 10
+		uart_echo(ch);
+     54a:	8c 2f       	mov	r24, r28
+     54c:	0e 94 82 03 	call	0x704	; 0x704 <uart_echo>
+	}
+	qi_insert(ch);
+     550:	8c 2f       	mov	r24, r28
+     552:	0e 94 a7 00 	call	0x14e	; 0x14e <qi_insert>
+}
+     556:	ff 91       	pop	r31
+     558:	ef 91       	pop	r30
+     55a:	cf 91       	pop	r28
+     55c:	bf 91       	pop	r27
+     55e:	af 91       	pop	r26
+     560:	9f 91       	pop	r25
+     562:	8f 91       	pop	r24
+     564:	7f 91       	pop	r23
+     566:	6f 91       	pop	r22
+     568:	5f 91       	pop	r21
+     56a:	4f 91       	pop	r20
+     56c:	3f 91       	pop	r19
+     56e:	2f 91       	pop	r18
+     570:	0f 90       	pop	r0
+     572:	0b be       	out	0x3b, r0	; 59
+     574:	0f 90       	pop	r0
+     576:	0f be       	out	0x3f, r0	; 63
+     578:	0f 90       	pop	r0
+     57a:	1f 90       	pop	r1
+     57c:	18 95       	reti
+
+0000057e <is_prime>:
+
+int is_prime(int n) {
+     57e:	cf 93       	push	r28
+     580:	df 93       	push	r29
+     582:	fc 01       	movw	r30, r24
+	int i;
+	for( i = 2; i <= n/2; i++)
+     584:	62 e0       	ldi	r22, 0x02	; 2
+     586:	70 e0       	ldi	r23, 0x00	; 0
+     588:	0e 94 06 05 	call	0xa0c	; 0xa0c <__divmodhi4>
+     58c:	eb 01       	movw	r28, r22
+     58e:	22 e0       	ldi	r18, 0x02	; 2
+     590:	30 e0       	ldi	r19, 0x00	; 0
+     592:	08 c0       	rjmp	.+16     	; 0x5a4 <is_prime+0x26>
+		if((n%i) == 0)
+     594:	cf 01       	movw	r24, r30
+     596:	b9 01       	movw	r22, r18
+     598:	0e 94 06 05 	call	0xa0c	; 0xa0c <__divmodhi4>
+     59c:	00 97       	sbiw	r24, 0x00	; 0
+     59e:	41 f0       	breq	.+16     	; 0x5b0 <is_prime+0x32>
+	qi_insert(ch);
+}
+
+int is_prime(int n) {
+	int i;
+	for( i = 2; i <= n/2; i++)
+     5a0:	2f 5f       	subi	r18, 0xFF	; 255
+     5a2:	3f 4f       	sbci	r19, 0xFF	; 255
+     5a4:	c2 17       	cp	r28, r18
+     5a6:	d3 07       	cpc	r29, r19
+     5a8:	ac f7       	brge	.-22     	; 0x594 <is_prime+0x16>
+		if((n%i) == 0)
+			return 0;
+	return 1;
+     5aa:	81 e0       	ldi	r24, 0x01	; 1
+     5ac:	90 e0       	ldi	r25, 0x00	; 0
+     5ae:	02 c0       	rjmp	.+4      	; 0x5b4 <is_prime+0x36>
+
+int is_prime(int n) {
+	int i;
+	for( i = 2; i <= n/2; i++)
+		if((n%i) == 0)
+			return 0;
+     5b0:	80 e0       	ldi	r24, 0x00	; 0
+     5b2:	90 e0       	ldi	r25, 0x00	; 0
+	return 1;
+}
+     5b4:	df 91       	pop	r29
+     5b6:	cf 91       	pop	r28
+     5b8:	08 95       	ret
+
+000005ba <app_prime>:
+
+void app_prime(char *ap)
+{
+     5ba:	cf 92       	push	r12
+     5bc:	df 92       	push	r13
+     5be:	ef 92       	push	r14
+     5c0:	ff 92       	push	r15
+     5c2:	0f 93       	push	r16
+     5c4:	1f 93       	push	r17
+     5c6:	cf 93       	push	r28
+     5c8:	df 93       	push	r29
+	int t = 2000, count = 0, n;
+
+	if (ap) t = atoi(ap);
+     5ca:	00 97       	sbiw	r24, 0x00	; 0
+     5cc:	21 f0       	breq	.+8      	; 0x5d6 <app_prime+0x1c>
+     5ce:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <atoi>
+     5d2:	7c 01       	movw	r14, r24
+     5d4:	04 c0       	rjmp	.+8      	; 0x5de <app_prime+0x24>
+	return 1;
+}
+
+void app_prime(char *ap)
+{
+	int t = 2000, count = 0, n;
+     5d6:	90 ed       	ldi	r25, 0xD0	; 208
+     5d8:	e9 2e       	mov	r14, r25
+     5da:	97 e0       	ldi	r25, 0x07	; 7
+     5dc:	f9 2e       	mov	r15, r25
+
+	if (ap) t = atoi(ap);
+	for(n = 2; n <= t; n++) {
+     5de:	c2 e0       	ldi	r28, 0x02	; 2
+     5e0:	d0 e0       	ldi	r29, 0x00	; 0
+	return 1;
+}
+
+void app_prime(char *ap)
+{
+	int t = 2000, count = 0, n;
+     5e2:	00 e0       	ldi	r16, 0x00	; 0
+     5e4:	10 e0       	ldi	r17, 0x00	; 0
+
+	if (ap) t = atoi(ap);
+	for(n = 2; n <= t; n++) {
+		if(is_prime(n)) {
+			count++;
+			printf( "%d is a prime. " "number !!!\n", n);
+     5e6:	8b e0       	ldi	r24, 0x0B	; 11
+     5e8:	c8 2e       	mov	r12, r24
+     5ea:	82 e0       	ldi	r24, 0x02	; 2
+     5ec:	d8 2e       	mov	r13, r24
+void app_prime(char *ap)
+{
+	int t = 2000, count = 0, n;
+
+	if (ap) t = atoi(ap);
+	for(n = 2; n <= t; n++) {
+     5ee:	16 c0       	rjmp	.+44     	; 0x61c <app_prime+0x62>
+		if(is_prime(n)) {
+     5f0:	ce 01       	movw	r24, r28
+     5f2:	0e 94 bf 02 	call	0x57e	; 0x57e <is_prime>
+     5f6:	00 97       	sbiw	r24, 0x00	; 0
+     5f8:	81 f0       	breq	.+32     	; 0x61a <app_prime+0x60>
+			count++;
+     5fa:	0f 5f       	subi	r16, 0xFF	; 255
+     5fc:	1f 4f       	sbci	r17, 0xFF	; 255
+			printf( "%d is a prime. " "number !!!\n", n);
+     5fe:	00 d0       	rcall	.+0      	; 0x600 <app_prime+0x46>
+     600:	0f 92       	push	r0
+     602:	ed b7       	in	r30, 0x3d	; 61
+     604:	fe b7       	in	r31, 0x3e	; 62
+     606:	d2 82       	std	Z+2, r13	; 0x02
+     608:	c1 82       	std	Z+1, r12	; 0x01
+     60a:	d4 83       	std	Z+4, r29	; 0x04
+     60c:	c3 83       	std	Z+3, r28	; 0x03
+     60e:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
+     612:	0f 90       	pop	r0
+     614:	0f 90       	pop	r0
+     616:	0f 90       	pop	r0
+     618:	0f 90       	pop	r0
+void app_prime(char *ap)
+{
+	int t = 2000, count = 0, n;
+
+	if (ap) t = atoi(ap);
+	for(n = 2; n <= t; n++) {
+     61a:	21 96       	adiw	r28, 0x01	; 1
+     61c:	ec 16       	cp	r14, r28
+     61e:	fd 06       	cpc	r15, r29
+     620:	3c f7       	brge	.-50     	; 0x5f0 <app_prime+0x36>
+		if(is_prime(n)) {
+			count++;
+			printf( "%d is a prime. " "number !!!\n", n);
+		}
+	}
+	printf("count = %d \n", count);
+     622:	00 d0       	rcall	.+0      	; 0x624 <app_prime+0x6a>
+     624:	0f 92       	push	r0
+     626:	86 e2       	ldi	r24, 0x26	; 38
+     628:	92 e0       	ldi	r25, 0x02	; 2
+     62a:	ed b7       	in	r30, 0x3d	; 61
+     62c:	fe b7       	in	r31, 0x3e	; 62
+     62e:	92 83       	std	Z+2, r25	; 0x02
+     630:	81 83       	std	Z+1, r24	; 0x01
+     632:	14 83       	std	Z+4, r17	; 0x04
+     634:	03 83       	std	Z+3, r16	; 0x03
+     636:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
+     63a:	0f 90       	pop	r0
+     63c:	0f 90       	pop	r0
+     63e:	0f 90       	pop	r0
+     640:	0f 90       	pop	r0
+}
+     642:	df 91       	pop	r29
+     644:	cf 91       	pop	r28
+     646:	1f 91       	pop	r17
+     648:	0f 91       	pop	r16
+     64a:	ff 90       	pop	r15
+     64c:	ef 90       	pop	r14
+     64e:	df 90       	pop	r13
+     650:	cf 90       	pop	r12
+     652:	08 95       	ret
+
+00000654 <uart_getchar>:
+int uart_getchar(FILE *stream)
+{
+	char ch;
+
+	do {
+		cli();
+     654:	f8 94       	cli
+		ch = qi_delete();
+     656:	0e 94 c9 00 	call	0x192	; 0x192 <qi_delete>
+		sei();
+     65a:	78 94       	sei
+	} while (ch == 0);
+     65c:	88 23       	and	r24, r24
+     65e:	d1 f3       	breq	.-12     	; 0x654 <uart_getchar>
+
+	if (ch == E0T) return -1;
+     660:	84 30       	cpi	r24, 0x04	; 4
+     662:	11 f0       	breq	.+4      	; 0x668 <uart_getchar+0x14>
+	else			return (ch);
+     664:	90 e0       	ldi	r25, 0x00	; 0
+     666:	08 95       	ret
+		cli();
+		ch = qi_delete();
+		sei();
+	} while (ch == 0);
+
+	if (ch == E0T) return -1;
+     668:	8f ef       	ldi	r24, 0xFF	; 255
+     66a:	9f ef       	ldi	r25, 0xFF	; 255
+	else			return (ch);
+}
+     66c:	08 95       	ret
+
+0000066e <uart_putchar>:
+	sbi(UCSR0B, RXEN0);
+	sbi(UCSR0B, RXCIE0);
+}
+
+int uart_putchar(char ch, FILE *stream)
+{
+     66e:	cf 93       	push	r28
+     670:	c8 2f       	mov	r28, r24
+	if (ch == '\n') uart_putchar('\r', stream);
+     672:	8a 30       	cpi	r24, 0x0A	; 10
+     674:	19 f4       	brne	.+6      	; 0x67c <uart_putchar+0xe>
+     676:	8d e0       	ldi	r24, 0x0D	; 13
+     678:	0e 94 37 03 	call	0x66e	; 0x66e <uart_putchar>
+
+	cli();
+     67c:	f8 94       	cli
+	if(!uart_busy) {
+     67e:	80 91 3e 03 	lds	r24, 0x033E
+     682:	88 23       	and	r24, r24
+     684:	61 f4       	brne	.+24     	; 0x69e <uart_putchar+0x30>
+		UDR0 = ch;
+     686:	c0 93 c6 00 	sts	0x00C6, r28
+		uart_busy = 1;
+     68a:	81 e0       	ldi	r24, 0x01	; 1
+     68c:	80 93 3e 03 	sts	0x033E, r24
+     690:	0b c0       	rjmp	.+22     	; 0x6a8 <uart_putchar+0x3a>
+	}
+	else {
+		while(qo_insert(ch) == 0) {
+			sei();
+     692:	78 94       	sei
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+     694:	81 e2       	ldi	r24, 0x21	; 33
+     696:	8a 95       	dec	r24
+     698:	f1 f7       	brne	.-4      	; 0x696 <uart_putchar+0x28>
+     69a:	00 00       	nop
+			_delay_us(100);
+			cli();
+     69c:	f8 94       	cli
+	if(!uart_busy) {
+		UDR0 = ch;
+		uart_busy = 1;
+	}
+	else {
+		while(qo_insert(ch) == 0) {
+     69e:	8c 2f       	mov	r24, r28
+     6a0:	0e 94 e6 00 	call	0x1cc	; 0x1cc <qo_insert>
+     6a4:	00 97       	sbiw	r24, 0x00	; 0
+     6a6:	a9 f3       	breq	.-22     	; 0x692 <uart_putchar+0x24>
+			sei();
+			_delay_us(100);
+			cli();
+		}
+	}
+	sei();
+     6a8:	78 94       	sei
+	return 1;
+}
+     6aa:	81 e0       	ldi	r24, 0x01	; 1
+     6ac:	90 e0       	ldi	r25, 0x00	; 0
+     6ae:	cf 91       	pop	r28
+     6b0:	08 95       	ret
+
+000006b2 <uart_init>:
+FILE Mystdin = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
+char uart_busy;
+
+void uart_init()
+{
+	stdin = &Mystdin; stdout = &Mystdout;
+     6b2:	8e e7       	ldi	r24, 0x7E	; 126
+     6b4:	92 e0       	ldi	r25, 0x02	; 2
+     6b6:	90 93 44 03 	sts	0x0344, r25
+     6ba:	80 93 43 03 	sts	0x0343, r24
+     6be:	8c e8       	ldi	r24, 0x8C	; 140
+     6c0:	92 e0       	ldi	r25, 0x02	; 2
+     6c2:	90 93 46 03 	sts	0x0346, r25
+     6c6:	80 93 45 03 	sts	0x0345, r24
+	q_init();
+     6ca:	0e 94 96 00 	call	0x12c	; 0x12c <q_init>
+	uart_busy = 0;
+     6ce:	10 92 3e 03 	sts	0x033E, r1
+
+	UBRR0H = 0x00; UBRR0L = 0x07;
+     6d2:	10 92 c5 00 	sts	0x00C5, r1
+     6d6:	87 e0       	ldi	r24, 0x07	; 7
+     6d8:	80 93 c4 00 	sts	0x00C4, r24
+	sbi(UCSR0A, U2X0);
+     6dc:	e0 ec       	ldi	r30, 0xC0	; 192
+     6de:	f0 e0       	ldi	r31, 0x00	; 0
+     6e0:	80 81       	ld	r24, Z
+     6e2:	82 60       	ori	r24, 0x02	; 2
+     6e4:	80 83       	st	Z, r24
+	sbi(UCSR0B, TXEN0);
+     6e6:	e1 ec       	ldi	r30, 0xC1	; 193
+     6e8:	f0 e0       	ldi	r31, 0x00	; 0
+     6ea:	80 81       	ld	r24, Z
+     6ec:	88 60       	ori	r24, 0x08	; 8
+     6ee:	80 83       	st	Z, r24
+	sbi(UCSR0B, TXCIE0);
+     6f0:	80 81       	ld	r24, Z
+     6f2:	80 64       	ori	r24, 0x40	; 64
+     6f4:	80 83       	st	Z, r24
+	sbi(UCSR0B, RXEN0);
+     6f6:	80 81       	ld	r24, Z
+     6f8:	80 61       	ori	r24, 0x10	; 16
+     6fa:	80 83       	st	Z, r24
+	sbi(UCSR0B, RXCIE0);
+     6fc:	80 81       	ld	r24, Z
+     6fe:	80 68       	ori	r24, 0x80	; 128
+     700:	80 83       	st	Z, r24
+}
+     702:	08 95       	ret
+
+00000704 <uart_echo>:
+	if (ch == E0T) return -1;
+	else			return (ch);
+}
+
+void uart_echo(char ch)
+{
+     704:	cf 93       	push	r28
+     706:	c8 2f       	mov	r28, r24
+	if (ch == '\n') uart_echo( '\r' );
+     708:	8a 30       	cpi	r24, 0x0A	; 10
+     70a:	19 f4       	brne	.+6      	; 0x712 <uart_echo+0xe>
+     70c:	8d e0       	ldi	r24, 0x0D	; 13
+     70e:	0e 94 82 03 	call	0x704	; 0x704 <uart_echo>
+	if (!uart_busy) {
+     712:	80 91 3e 03 	lds	r24, 0x033E
+     716:	88 23       	and	r24, r24
+     718:	31 f4       	brne	.+12     	; 0x726 <uart_echo+0x22>
+		UDR0 = ch;
+     71a:	c0 93 c6 00 	sts	0x00C6, r28
+		uart_busy = 1;
+     71e:	81 e0       	ldi	r24, 0x01	; 1
+     720:	80 93 3e 03 	sts	0x033E, r24
+     724:	03 c0       	rjmp	.+6      	; 0x72c <uart_echo+0x28>
+	}
+	else
+		qo_insert(ch);
+     726:	8c 2f       	mov	r24, r28
+     728:	0e 94 e6 00 	call	0x1cc	; 0x1cc <qo_insert>
+}
+     72c:	cf 91       	pop	r28
+     72e:	08 95       	ret
+
+00000730 <get_timer>:
+
+struct timer *get_timer()
+{
+	struct timer *tp;
+
+	tp = (struct timer *)malloc(sizeof(*tp));
+     730:	8e e0       	ldi	r24, 0x0E	; 14
+     732:	90 e0       	ldi	r25, 0x00	; 0
+     734:	0e 94 2d 05 	call	0xa5a	; 0xa5a <malloc>
+	return tp;
+}
+     738:	08 95       	ret
+
+0000073a <insert_timer>:
+
+struct timer *Thead = NULL;
+
+void insert_timer(struct task *tskp, int ms) {
+     73a:	ef 92       	push	r14
+     73c:	ff 92       	push	r15
+     73e:	0f 93       	push	r16
+     740:	1f 93       	push	r17
+     742:	cf 93       	push	r28
+     744:	df 93       	push	r29
+     746:	f8 2e       	mov	r15, r24
+     748:	e9 2e       	mov	r14, r25
+     74a:	8b 01       	movw	r16, r22
+	int	total;
+	struct timer *tp, *cp, *pp;
+
+	tp = get_timer();
+     74c:	0e 94 98 03 	call	0x730	; 0x730 <get_timer>
+     750:	ec 01       	movw	r28, r24
+	tp->task = *tskp;
+     752:	dc 01       	movw	r26, r24
+     754:	12 96       	adiw	r26, 0x02	; 2
+     756:	ef 2d       	mov	r30, r15
+     758:	fe 2d       	mov	r31, r14
+     75a:	8a e0       	ldi	r24, 0x0A	; 10
+     75c:	01 90       	ld	r0, Z+
+     75e:	0d 92       	st	X+, r0
+     760:	81 50       	subi	r24, 0x01	; 1
+     762:	e1 f7       	brne	.-8      	; 0x75c <insert_timer+0x22>
+	tp->time = ms;
+     764:	19 83       	std	Y+1, r17	; 0x01
+     766:	08 83       	st	Y, r16
+
+	if (Thead == NULL) {
+     768:	e0 91 b2 02 	lds	r30, 0x02B2
+     76c:	f0 91 b3 02 	lds	r31, 0x02B3
+     770:	30 97       	sbiw	r30, 0x00	; 0
+     772:	29 f4       	brne	.+10     	; 0x77e <insert_timer+0x44>
+		Thead = tp, tp->link = NULL;
+     774:	d0 93 b3 02 	sts	0x02B3, r29
+     778:	c0 93 b2 02 	sts	0x02B2, r28
+     77c:	2f c0       	rjmp	.+94     	; 0x7dc <insert_timer+0xa2>
+
+	tp = get_timer();
+	tp->task = *tskp;
+	tp->time = ms;
+
+	if (Thead == NULL) {
+     77e:	40 e0       	ldi	r20, 0x00	; 0
+     780:	50 e0       	ldi	r21, 0x00	; 0
+     782:	20 e0       	ldi	r18, 0x00	; 0
+     784:	30 e0       	ldi	r19, 0x00	; 0
+     786:	01 c0       	rjmp	.+2      	; 0x78a <insert_timer+0x50>
+		Thead = tp, tp->link = NULL;
+		return;
+	}
+	pp = NULL, total = 0;
+	for (cp = Thead; cp; cp = cp->link) {
+     788:	fd 01       	movw	r30, r26
+		total += cp->time;
+     78a:	80 81       	ld	r24, Z
+     78c:	91 81       	ldd	r25, Z+1	; 0x01
+     78e:	28 0f       	add	r18, r24
+     790:	39 1f       	adc	r19, r25
+		if (total >= ms)
+     792:	20 17       	cp	r18, r16
+     794:	31 07       	cpc	r19, r17
+     796:	34 f4       	brge	.+12     	; 0x7a4 <insert_timer+0x6a>
+	if (Thead == NULL) {
+		Thead = tp, tp->link = NULL;
+		return;
+	}
+	pp = NULL, total = 0;
+	for (cp = Thead; cp; cp = cp->link) {
+     798:	a4 85       	ldd	r26, Z+12	; 0x0c
+     79a:	b5 85       	ldd	r27, Z+13	; 0x0d
+     79c:	af 01       	movw	r20, r30
+     79e:	10 97       	sbiw	r26, 0x00	; 0
+     7a0:	99 f7       	brne	.-26     	; 0x788 <insert_timer+0x4e>
+     7a2:	01 c0       	rjmp	.+2      	; 0x7a6 <insert_timer+0x6c>
+		total += cp->time;
+		if (total >= ms)
+     7a4:	df 01       	movw	r26, r30
+			break;
+		pp = cp;
+	}
+	if (pp == NULL) {
+     7a6:	41 15       	cp	r20, r1
+     7a8:	51 05       	cpc	r21, r1
+     7aa:	79 f4       	brne	.+30     	; 0x7ca <insert_timer+0x90>
+		cp->time -= tp->time;
+     7ac:	8d 91       	ld	r24, X+
+     7ae:	9c 91       	ld	r25, X
+     7b0:	11 97       	sbiw	r26, 0x01	; 1
+     7b2:	80 1b       	sub	r24, r16
+     7b4:	91 0b       	sbc	r25, r17
+     7b6:	11 96       	adiw	r26, 0x01	; 1
+     7b8:	9c 93       	st	X, r25
+     7ba:	8e 93       	st	-X, r24
+		tp->link = cp, Thead = tp;
+     7bc:	bd 87       	std	Y+13, r27	; 0x0d
+     7be:	ac 87       	std	Y+12, r26	; 0x0c
+     7c0:	d0 93 b3 02 	sts	0x02B3, r29
+     7c4:	c0 93 b2 02 	sts	0x02B2, r28
+     7c8:	24 c0       	rjmp	.+72     	; 0x812 <insert_timer+0xd8>
+	}
+	else if (cp == NULL) {
+     7ca:	10 97       	sbiw	r26, 0x00	; 0
+     7cc:	51 f4       	brne	.+20     	; 0x7e2 <insert_timer+0xa8>
+		tp->time -= total;
+     7ce:	02 1b       	sub	r16, r18
+     7d0:	13 0b       	sbc	r17, r19
+     7d2:	19 83       	std	Y+1, r17	; 0x01
+     7d4:	08 83       	st	Y, r16
+		pp->link = tp;
+     7d6:	fa 01       	movw	r30, r20
+     7d8:	d5 87       	std	Z+13, r29	; 0x0d
+     7da:	c4 87       	std	Z+12, r28	; 0x0c
+		tp->link = NULL;
+     7dc:	1d 86       	std	Y+13, r1	; 0x0d
+     7de:	1c 86       	std	Y+12, r1	; 0x0c
+     7e0:	18 c0       	rjmp	.+48     	; 0x812 <insert_timer+0xd8>
+	}
+	else {
+		total -= cp->time;
+     7e2:	8d 91       	ld	r24, X+
+     7e4:	9c 91       	ld	r25, X
+     7e6:	11 97       	sbiw	r26, 0x01	; 1
+     7e8:	b9 01       	movw	r22, r18
+     7ea:	68 1b       	sub	r22, r24
+     7ec:	79 0b       	sbc	r23, r25
+		tp->time -= total;
+     7ee:	98 01       	movw	r18, r16
+     7f0:	26 1b       	sub	r18, r22
+     7f2:	37 0b       	sbc	r19, r23
+     7f4:	39 83       	std	Y+1, r19	; 0x01
+     7f6:	28 83       	st	Y, r18
+		cp->time -= tp->time;
+     7f8:	8d 91       	ld	r24, X+
+     7fa:	9c 91       	ld	r25, X
+     7fc:	11 97       	sbiw	r26, 0x01	; 1
+     7fe:	82 1b       	sub	r24, r18
+     800:	93 0b       	sbc	r25, r19
+     802:	11 96       	adiw	r26, 0x01	; 1
+     804:	9c 93       	st	X, r25
+     806:	8e 93       	st	-X, r24
+		pp->link = tp;
+     808:	fa 01       	movw	r30, r20
+     80a:	d5 87       	std	Z+13, r29	; 0x0d
+     80c:	c4 87       	std	Z+12, r28	; 0x0c
+		tp->link = cp;
+     80e:	bd 87       	std	Y+13, r27	; 0x0d
+     810:	ac 87       	std	Y+12, r26	; 0x0c
+	}
+}
+     812:	df 91       	pop	r29
+     814:	cf 91       	pop	r28
+     816:	1f 91       	pop	r17
+     818:	0f 91       	pop	r16
+     81a:	ff 90       	pop	r15
+     81c:	ef 90       	pop	r14
+     81e:	08 95       	ret
+
+00000820 <tour_timer>:
+void tour_timer()
+{
+     820:	ef 92       	push	r14
+     822:	ff 92       	push	r15
+     824:	0f 93       	push	r16
+     826:	1f 93       	push	r17
+     828:	cf 93       	push	r28
+     82a:	df 93       	push	r29
+	struct timer *cp;
+	int		total = 0;
+
+	printf("\n");
+     82c:	8a e0       	ldi	r24, 0x0A	; 10
+     82e:	90 e0       	ldi	r25, 0x00	; 0
+     830:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
+	for(cp = Thead; cp != NULL; cp = cp -> link) {
+     834:	c0 91 b2 02 	lds	r28, 0x02B2
+     838:	d0 91 b3 02 	lds	r29, 0x02B3
+	}
+}
+void tour_timer()
+{
+	struct timer *cp;
+	int		total = 0;
+     83c:	00 e0       	ldi	r16, 0x00	; 0
+     83e:	10 e0       	ldi	r17, 0x00	; 0
+
+	printf("\n");
+	for(cp = Thead; cp != NULL; cp = cp -> link) {
+		total += cp->time;
+		printf("-->%d(%d) ", cp->time, total);
+     840:	8a e9       	ldi	r24, 0x9A	; 154
+     842:	e8 2e       	mov	r14, r24
+     844:	82 e0       	ldi	r24, 0x02	; 2
+     846:	f8 2e       	mov	r15, r24
+{
+	struct timer *cp;
+	int		total = 0;
+
+	printf("\n");
+	for(cp = Thead; cp != NULL; cp = cp -> link) {
+     848:	20 c0       	rjmp	.+64     	; 0x88a <tour_timer+0x6a>
+		total += cp->time;
+     84a:	88 81       	ld	r24, Y
+     84c:	99 81       	ldd	r25, Y+1	; 0x01
+     84e:	08 0f       	add	r16, r24
+     850:	19 1f       	adc	r17, r25
+		printf("-->%d(%d) ", cp->time, total);
+     852:	00 d0       	rcall	.+0      	; 0x854 <tour_timer+0x34>
+     854:	00 d0       	rcall	.+0      	; 0x856 <tour_timer+0x36>
+     856:	ed b7       	in	r30, 0x3d	; 61
+     858:	fe b7       	in	r31, 0x3e	; 62
+     85a:	31 96       	adiw	r30, 0x01	; 1
+     85c:	ad b7       	in	r26, 0x3d	; 61
+     85e:	be b7       	in	r27, 0x3e	; 62
+     860:	12 96       	adiw	r26, 0x02	; 2
+     862:	fc 92       	st	X, r15
+     864:	ee 92       	st	-X, r14
+     866:	11 97       	sbiw	r26, 0x01	; 1
+     868:	93 83       	std	Z+3, r25	; 0x03
+     86a:	82 83       	std	Z+2, r24	; 0x02
+     86c:	15 83       	std	Z+5, r17	; 0x05
+     86e:	04 83       	std	Z+4, r16	; 0x04
+     870:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
+{
+	struct timer *cp;
+	int		total = 0;
+
+	printf("\n");
+	for(cp = Thead; cp != NULL; cp = cp -> link) {
+     874:	0c 84       	ldd	r0, Y+12	; 0x0c
+     876:	dd 85       	ldd	r29, Y+13	; 0x0d
+     878:	c0 2d       	mov	r28, r0
+     87a:	8d b7       	in	r24, 0x3d	; 61
+     87c:	9e b7       	in	r25, 0x3e	; 62
+     87e:	06 96       	adiw	r24, 0x06	; 6
+     880:	0f b6       	in	r0, 0x3f	; 63
+     882:	f8 94       	cli
+     884:	9e bf       	out	0x3e, r25	; 62
+     886:	0f be       	out	0x3f, r0	; 63
+     888:	8d bf       	out	0x3d, r24	; 61
+     88a:	20 97       	sbiw	r28, 0x00	; 0
+     88c:	f1 f6       	brne	.-68     	; 0x84a <tour_timer+0x2a>
+		total += cp->time;
+		printf("-->%d(%d) ", cp->time, total);
+	}
+	printf("\n");
+     88e:	8a e0       	ldi	r24, 0x0A	; 10
+     890:	90 e0       	ldi	r25, 0x00	; 0
+     892:	0e 94 fd 06 	call	0xdfa	; 0xdfa <putchar>
+}
+     896:	df 91       	pop	r29
+     898:	cf 91       	pop	r28
+     89a:	1f 91       	pop	r17
+     89c:	0f 91       	pop	r16
+     89e:	ff 90       	pop	r15
+     8a0:	ef 90       	pop	r14
+     8a2:	08 95       	ret
+
+000008a4 <free_timer>:
+
+void free_timer()
+{
+	struct timer *cp;
+	for( ; Thead != NULL; ) {
+     8a4:	09 c0       	rjmp	.+18     	; 0x8b8 <free_timer+0x14>
+		cp = Thead;
+		Thead = cp -> link;
+     8a6:	fc 01       	movw	r30, r24
+     8a8:	24 85       	ldd	r18, Z+12	; 0x0c
+     8aa:	35 85       	ldd	r19, Z+13	; 0x0d
+     8ac:	30 93 b3 02 	sts	0x02B3, r19
+     8b0:	20 93 b2 02 	sts	0x02B2, r18
+		free(cp);
+     8b4:	0e 94 c3 05 	call	0xb86	; 0xb86 <free>
+}
+
+void free_timer()
+{
+	struct timer *cp;
+	for( ; Thead != NULL; ) {
+     8b8:	80 91 b2 02 	lds	r24, 0x02B2
+     8bc:	90 91 b3 02 	lds	r25, 0x02B3
+     8c0:	00 97       	sbiw	r24, 0x00	; 0
+     8c2:	89 f7       	brne	.-30     	; 0x8a6 <free_timer+0x2>
+		cp = Thead;
+		Thead = cp -> link;
+		free(cp);
+	}
+}
+     8c4:	08 95       	ret
+
+000008c6 <app_timer>:
+
+void app_timer(char *ap)
+{
+     8c6:	0f 93       	push	r16
+     8c8:	1f 93       	push	r17
+     8ca:	cf 93       	push	r28
+     8cc:	df 93       	push	r29
+     8ce:	cd b7       	in	r28, 0x3d	; 61
+     8d0:	de b7       	in	r29, 0x3e	; 62
+     8d2:	62 97       	sbiw	r28, 0x12	; 18
+     8d4:	0f b6       	in	r0, 0x3f	; 63
+     8d6:	f8 94       	cli
+     8d8:	de bf       	out	0x3e, r29	; 62
+     8da:	0f be       	out	0x3f, r0	; 63
+     8dc:	cd bf       	out	0x3d, r28	; 61
+	char buf[8];
+	int ms;
+	struct task tsk;
+
+	while(1) {
+		printf( ">> ");
+     8de:	05 ea       	ldi	r16, 0xA5	; 165
+     8e0:	12 e0       	ldi	r17, 0x02	; 2
+     8e2:	0f 92       	push	r0
+     8e4:	0f 92       	push	r0
+     8e6:	ed b7       	in	r30, 0x3d	; 61
+     8e8:	fe b7       	in	r31, 0x3e	; 62
+     8ea:	12 83       	std	Z+2, r17	; 0x02
+     8ec:	01 83       	std	Z+1, r16	; 0x01
+     8ee:	0e 94 eb 06 	call	0xdd6	; 0xdd6 <printf>
+		if(fgets(buf, 8, stdin) == NULL || (ms = atoi(buf)) ==0)
+     8f2:	0f 90       	pop	r0
+     8f4:	0f 90       	pop	r0
+     8f6:	40 91 43 03 	lds	r20, 0x0343
+     8fa:	50 91 44 03 	lds	r21, 0x0344
+     8fe:	ce 01       	movw	r24, r28
+     900:	01 96       	adiw	r24, 0x01	; 1
+     902:	68 e0       	ldi	r22, 0x08	; 8
+     904:	70 e0       	ldi	r23, 0x00	; 0
+     906:	0e 94 b7 06 	call	0xd6e	; 0xd6e <fgets>
+     90a:	00 97       	sbiw	r24, 0x00	; 0
+     90c:	61 f0       	breq	.+24     	; 0x926 <app_timer+0x60>
+     90e:	ce 01       	movw	r24, r28
+     910:	01 96       	adiw	r24, 0x01	; 1
+     912:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <atoi>
+     916:	bc 01       	movw	r22, r24
+     918:	00 97       	sbiw	r24, 0x00	; 0
+     91a:	29 f0       	breq	.+10     	; 0x926 <app_timer+0x60>
+			break;
+
+		insert_timer(&tsk, ms);
+     91c:	ce 01       	movw	r24, r28
+     91e:	09 96       	adiw	r24, 0x09	; 9
+     920:	0e 94 9d 03 	call	0x73a	; 0x73a <insert_timer>
+	}
+     924:	de cf       	rjmp	.-68     	; 0x8e2 <app_timer+0x1c>
+	tour_timer();
+     926:	0e 94 10 04 	call	0x820	; 0x820 <tour_timer>
+	free_timer();
+     92a:	0e 94 52 04 	call	0x8a4	; 0x8a4 <free_timer>
+}
+     92e:	62 96       	adiw	r28, 0x12	; 18
+     930:	0f b6       	in	r0, 0x3f	; 63
+     932:	f8 94       	cli
+     934:	de bf       	out	0x3e, r29	; 62
+     936:	0f be       	out	0x3f, r0	; 63
+     938:	cd bf       	out	0x3d, r28	; 61
+     93a:	df 91       	pop	r29
+     93c:	cf 91       	pop	r28
+     93e:	1f 91       	pop	r17
+     940:	0f 91       	pop	r16
      942:	08 95       	ret
 
 00000944 <main>:
@@ -1692,12 +1692,12 @@ int main()
 	char cmd[128], *cp, *ap;
 
 	uart_init();
-     95a:	0e 94 2d 03 	call	0x65a	; 0x65a <uart_init>
+     95a:	0e 94 59 03 	call	0x6b2	; 0x6b2 <uart_init>
 	sei();
      95e:	78 94       	sei
 	while(1) {
 		printf("$ ");
-     960:	27 e3       	ldi	r18, 0x37	; 55
+     960:	23 e3       	ldi	r18, 0x33	; 51
      962:	c2 2e       	mov	r12, r18
      964:	22 e0       	ldi	r18, 0x02	; 2
      966:	d2 2e       	mov	r13, r18
@@ -1724,7 +1724,7 @@ int main()
 		if((cp = strtok(cmd, "\n\r\t    ")) == NULL) continue;
      994:	ce 01       	movw	r24, r28
      996:	01 96       	adiw	r24, 0x01	; 1
-     998:	6a e3       	ldi	r22, 0x3A	; 58
+     998:	66 e3       	ldi	r22, 0x36	; 54
      99a:	72 e0       	ldi	r23, 0x02	; 2
      99c:	0e 94 7a 06 	call	0xcf4	; 0xcf4 <strtok>
      9a0:	8c 01       	movw	r16, r24
@@ -1733,7 +1733,7 @@ int main()
 		ap = strtok(NULL, "\n\r\t  ");
      9a6:	80 e0       	ldi	r24, 0x00	; 0
      9a8:	90 e0       	ldi	r25, 0x00	; 0
-     9aa:	62 e4       	ldi	r22, 0x42	; 66
+     9aa:	6e e3       	ldi	r22, 0x3E	; 62
      9ac:	72 e0       	ldi	r23, 0x02	; 2
      9ae:	0e 94 7a 06 	call	0xcf4	; 0xcf4 <strtok>
      9b2:	7c 01       	movw	r14, r24
@@ -1741,42 +1741,42 @@ int main()
 		if(!strcmp(cmd, "prime")) app_prime(ap);
      9b4:	ce 01       	movw	r24, r28
      9b6:	01 96       	adiw	r24, 0x01	; 1
-     9b8:	68 e4       	ldi	r22, 0x48	; 72
+     9b8:	64 e4       	ldi	r22, 0x44	; 68
      9ba:	72 e0       	ldi	r23, 0x02	; 2
      9bc:	0e 94 7f 06 	call	0xcfe	; 0xcfe <strcmp>
      9c0:	00 97       	sbiw	r24, 0x00	; 0
      9c2:	21 f4       	brne	.+8      	; 0x9cc <main+0x88>
      9c4:	c7 01       	movw	r24, r14
-     9c6:	0e 94 b1 02 	call	0x562	; 0x562 <app_prime>
+     9c6:	0e 94 dd 02 	call	0x5ba	; 0x5ba <app_prime>
      9ca:	ce cf       	rjmp	.-100    	; 0x968 <main+0x24>
 		else if (!strcmp(cp, "list" )) app_list(ap);
      9cc:	c8 01       	movw	r24, r16
-     9ce:	6e e4       	ldi	r22, 0x4E	; 78
+     9ce:	6a e4       	ldi	r22, 0x4A	; 74
      9d0:	72 e0       	ldi	r23, 0x02	; 2
      9d2:	0e 94 7f 06 	call	0xcfe	; 0xcfe <strcmp>
      9d6:	00 97       	sbiw	r24, 0x00	; 0
      9d8:	21 f4       	brne	.+8      	; 0x9e2 <main+0x9e>
      9da:	c7 01       	movw	r24, r14
-     9dc:	0e 94 4c 04 	call	0x898	; 0x898 <app_list>
+     9dc:	0e 94 05 02 	call	0x40a	; 0x40a <app_list>
      9e0:	c3 cf       	rjmp	.-122    	; 0x968 <main+0x24>
 		else if (!strcmp(cp, "timer" )) app_timer(ap);
      9e2:	c8 01       	movw	r24, r16
-     9e4:	63 e5       	ldi	r22, 0x53	; 83
+     9e4:	6f e4       	ldi	r22, 0x4F	; 79
      9e6:	72 e0       	ldi	r23, 0x02	; 2
      9e8:	0e 94 7f 06 	call	0xcfe	; 0xcfe <strcmp>
      9ec:	00 97       	sbiw	r24, 0x00	; 0
      9ee:	21 f4       	brne	.+8      	; 0x9f8 <main+0xb4>
      9f0:	c7 01       	movw	r24, r14
-     9f2:	0e 94 f0 01 	call	0x3e0	; 0x3e0 <app_timer>
+     9f2:	0e 94 63 04 	call	0x8c6	; 0x8c6 <app_timer>
      9f6:	b8 cf       	rjmp	.-144    	; 0x968 <main+0x24>
 		else						printf("Unknown command ...\n");
-     9f8:	89 e5       	ldi	r24, 0x59	; 89
+     9f8:	85 e5       	ldi	r24, 0x55	; 85
      9fa:	92 e0       	ldi	r25, 0x02	; 2
      9fc:	0e 94 04 07 	call	0xe08	; 0xe08 <puts>
      a00:	b3 cf       	rjmp	.-154    	; 0x968 <main+0x24>
 	}
 	printf( "logout, good bye !!!\n");
-     a02:	8d e6       	ldi	r24, 0x6D	; 109
+     a02:	89 e6       	ldi	r24, 0x69	; 105
      a04:	92 e0       	ldi	r25, 0x02	; 2
      a06:	0e 94 04 07 	call	0xe08	; 0xe08 <puts>
      a0a:	ff cf       	rjmp	.-2      	; 0xa0a <main+0xc6>

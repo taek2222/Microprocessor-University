@@ -50,7 +50,8 @@ void insert_timer(struct task *tskp, int ms) {
 		tp->link = cp;
 	}
 }
-void tour_timer()
+
+void tour_timer() // 시간 출력
 {
 	struct timer *cp;
 	int		total = 0;
@@ -63,7 +64,7 @@ void tour_timer()
 	printf("\n");
 }
 
-void free_timer()
+void free_timer() // 시간 메모리 반납
 {
 	struct timer *cp;
 	for( ; Thead != NULL; ) {
