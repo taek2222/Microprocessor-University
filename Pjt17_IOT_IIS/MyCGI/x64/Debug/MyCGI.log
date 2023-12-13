@@ -1,0 +1,7 @@
+﻿  MyCGI.c
+C:\Users\User\Desktop\Microprocessor-University\Pjt17_IOT_IIS\MyCGI\MyCGI.c(5,1): warning C4029: 선언된 정식 매개 변수 목록이 정의와 다릅니다.
+  MyCGI_main.c
+C:\Users\User\Desktop\Microprocessor-University\Pjt17_IOT_IIS\MyCGI\MyCGI_main.c(14,18): warning C4020: 'MyCGI_web': 실제 매개 변수가 너무 많습니다.
+C:\Users\User\Desktop\Microprocessor-University\Pjt17_IOT_IIS\MyCGI\MyCGI_main.c(10,13): warning C4996: 'ctime': This function or variable may be unsafe. Consider using ctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  코드를 생성하고 있습니다...
+  MyCGI.vcxproj -> C:\Users\User\Desktop\Microprocessor-University\Pjt17_IOT_IIS\x64\Debug\MyCGI.exe
