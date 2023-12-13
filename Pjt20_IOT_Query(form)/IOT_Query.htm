@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title> IOT_Query.htm </title>
+    <style type="text/css"></style>
+</head>
+<body bgcolor="#FFFFFF">
+    <p align ="center"><br></p>
+
+    <form enctype="multipart/form-data" action="cgi-bin/IOT_Query.exe" method="GET">
+        <input type= "hidden" name= "IOT" value="PUT">
+            <div align="center">
+                <table border="1" cellspacing="0">
+                    <tr>
+                        <td width="100" bgcolor="#D7F2F1"><p align="center"><strong>COM Port</strong></p></td>
+                        <td bgcolor="#E7E7E7"> <input type="text" size="74" name="PORT" /></td>
+                    </tr>
+
+                    <tr>
+                        <td width="100" bgcolor="#D7F2F1"><p align="center"><strong>Command</strong></p></td>
+                        <td bgcolor="#E7E7E7"> <input type="text" size="74" name="CMD" /></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" bgcolor ="#EDF0D9">
+                            <div align="center">
+                                <center>
+                                    <table border="0">
+                                        <tr>
+                                            <td width="50">
+                                                <input type="submit" value="Send" /> 
+                                            </td>
+                                            <td width="10">
+                                            </td>
+                                            <td>
+                                                <input type="reset" value="New" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </center>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+    </form>
+
+</body>
+</html>

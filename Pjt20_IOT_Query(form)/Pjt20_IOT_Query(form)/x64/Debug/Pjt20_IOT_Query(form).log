@@ -1,0 +1,9 @@
+﻿  CGI_get_data.c
+  IOT_Query_main.c
+  IOT_Query_web.c
+  queryGet.c
+C:\Users\User\Desktop\Microprocessor-University\Pjt20_IOT_Query(form)\queryGet.c(7,39): warning C4101: 'content_length' :참조되지 않은 지역 변수입니다.
+C:\Users\User\Desktop\Microprocessor-University\Pjt20_IOT_Query(form)\queryGet.c(8,24): warning C4101: 'i' :참조되지 않은 지역 변수입니다.
+  serial.c
+  코드를 생성하고 있습니다...
+  Pjt20_IOT_Query(form).vcxproj -> C:\Users\User\Desktop\Microprocessor-University\Pjt20_IOT_Query(form)\x64\Debug\Pjt20_IOT_Query(form).exe
