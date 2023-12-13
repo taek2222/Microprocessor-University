@@ -9,22 +9,9 @@ struct node {
 	struct node	*link;
 };
 
-extern struct node *Head;
-
-struct node *get_node();
-void	free_node(struct node *np);
-void	insert_node_head(struct node *np),
-		insert_node_tail(struct node *np),
-		insert_node_ascn(struct node *np);
-void insert_node_desc(struct node *np);
-void app_list(char *ap);
-
-void	tour_list(),
-		free_list();
-
 struct node *Head = NULL;
 
-struct node *get_node()
+struct node *get_node() // 메모리 할당
 {
 	struct node *cp;
 
@@ -37,7 +24,7 @@ void free_node(struct node *np)
 	free(np);
 }
 
-void insert_node_head(struct node *np)
+void insert_node_head(struct node *np) // 헤더
 {
 	if(!Head) {
 		Head = np;
@@ -48,8 +35,10 @@ void insert_node_head(struct node *np)
 		Head = np;
 	}
 }
+// list h 입력 후 a, b, c, d, e, f 입력 시
+// f - e - d - c - b - a 출력
 
-void insert_node_tail(struct node *np)
+void insert_node_tail(struct node *np) // 꼬리
 {
 	struct node *cp;
 
@@ -61,8 +50,11 @@ void insert_node_tail(struct node *np)
 	}
 	np -> link = NULL;
 }
+// list t 입력 후 a, b, c, d, e, f 입력 시
+// a - b - c - d - e - f 출력
 
-void insert_node_ascn(struct node *np)
+
+void insert_node_ascn(struct node *np) // 오름 차순 
 {
 	struct node *cp, *pp;
 	if(!Head) {
@@ -82,8 +74,10 @@ void insert_node_ascn(struct node *np)
 		}
 	}
 }
+// list 입력 후 a, b, c, d, e, f 입력 시
+// a - b - c - d - e - f 출력
 
-void insert_node_desc(struct node *np) {
+void insert_node_desc(struct node *np) { // 내림 차순
    struct node *cp, *pp;
 
    if(!Head) {
@@ -101,8 +95,10 @@ void insert_node_desc(struct node *np) {
       }
    }
 }
+// list 입력 후 a, b, c, d, e, f 입력 시
+// f - e - d - c - b - a 출력
 
-void tour_list() {
+void tour_list() { // list 배열 출력
 	struct node *cp;
 	printf("\n");
 	
@@ -111,7 +107,7 @@ void tour_list() {
 	printf("\n");
 }
 
-void free_list()
+void free_list() // 노드 반납
 {
 	struct node *cp;
 	
@@ -122,7 +118,7 @@ void free_list()
 	}
 }	
 
-void app_list(char *ap)
+void app_list(char *ap) // list 명령어 실행
 {
 	char buf[8], how = 'a' ;
 	struct node *np;
@@ -135,13 +131,13 @@ void app_list(char *ap)
 		np = get_node();
 		np -> data = buf[0];
 		switch(how) {
-			case 'h' : insert_node_head(np); break;
-			case 't' : insert_node_tail(np); break;
-			case 'd' : insert_node_desc(np); break;
-			default : insert_node_ascn(np);
+			case 'h' : insert_node_head(np); break; // 헤더
+			case 't' : insert_node_tail(np); break; // 꼬리
+			case 'd' : insert_node_desc(np); break; // 내림차순
+			default : insert_node_ascn(np); // 오름차순
 		}
 	}
-	tour_list();
-	free_list();
+	tour_list(); // 리스트 출력
+	free_list(); // 메모리 반납
 }
 

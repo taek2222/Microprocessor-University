@@ -63,12 +63,12 @@ int uart_getchar(FILE *stream)
 	else			return (ch);
 }
 
-void uart_echo(char ch)
+void uart_echo(char ch) // 수신 인터럽트 사용자 출력 부분
 {
 	if (ch == '\n') uart_echo( '\r' );
-	if (!uart_busy) {
+	if (!uart_busy) { // 0 False, 1 True
 		UDR0 = ch;
-		uart_busy = 1;
+		uart_busy = 1; // UART : 0 (바쁘지 않다), UART : 1 (바쁘다)
 	}
 	else
 		qo_insert(ch);

@@ -138,7 +138,7 @@ Disassembly of section .text:
 
 0000012c <get_node>:
 
-struct node *get_node()
+struct node *get_node() // 메모리 할당
 {
 	struct node *cp;
 
@@ -161,7 +161,7 @@ void free_node(struct node *np)
 
 0000013c <insert_node_head>:
 
-void insert_node_head(struct node *np)
+void insert_node_head(struct node *np) // 헤더
 {
      13c:	fc 01       	movw	r30, r24
 	if(!Head) {
@@ -188,7 +188,7 @@ void insert_node_head(struct node *np)
 
 00000166 <insert_node_tail>:
 
-void insert_node_tail(struct node *np)
+void insert_node_tail(struct node *np) // 꼬리
 {
 	struct node *cp;
 
@@ -221,8 +221,11 @@ void insert_node_tail(struct node *np)
      192:	08 95       	ret
 
 00000194 <insert_node_ascn>:
+// list t 입력 후 a, b, c, d, e, f 입력 시
+// a - b - c - d - e - f 출력
 
-void insert_node_ascn(struct node *np)
+
+void insert_node_ascn(struct node *np) // 오름 차순 
 {
      194:	cf 93       	push	r28
      196:	df 93       	push	r29
@@ -246,7 +249,7 @@ void insert_node_ascn(struct node *np)
      1b0:	d0 e0       	ldi	r29, 0x00	; 0
      1b2:	0f c0       	rjmp	.+30     	; 0x1d2 <insert_node_ascn+0x3e>
 
-void insert_node_ascn(struct node *np)
+void insert_node_ascn(struct node *np) // 오름 차순 
 {
 	struct node *cp, *pp;
 	if(!Head) {
@@ -317,8 +320,10 @@ void insert_node_ascn(struct node *np)
      200:	08 95       	ret
 
 00000202 <insert_node_desc>:
+// list 입력 후 a, b, c, d, e, f 입력 시
+// a - b - c - d - e - f 출력
 
-void insert_node_desc(struct node *np) {
+void insert_node_desc(struct node *np) { // 내림 차순
      202:	cf 93       	push	r28
      204:	df 93       	push	r29
      206:	fc 01       	movw	r30, r24
@@ -341,7 +346,7 @@ void insert_node_desc(struct node *np) {
      21e:	d0 e0       	ldi	r29, 0x00	; 0
      220:	0f c0       	rjmp	.+30     	; 0x240 <insert_node_desc+0x3e>
 
-void insert_node_desc(struct node *np) {
+void insert_node_desc(struct node *np) { // 내림 차순
    struct node *cp, *pp;
 
    if(!Head) {
@@ -396,8 +401,10 @@ void insert_node_desc(struct node *np) {
      26e:	08 95       	ret
 
 00000270 <tour_list>:
+// list 입력 후 a, b, c, d, e, f 입력 시
+// f - e - d - c - b - a 출력
 
-void tour_list() {
+void tour_list() { // list 배열 출력
      270:	0f 93       	push	r16
      272:	1f 93       	push	r17
      274:	cf 93       	push	r28
@@ -415,7 +422,7 @@ void tour_list() {
      288:	00 e0       	ldi	r16, 0x00	; 0
      28a:	12 e0       	ldi	r17, 0x02	; 2
 
-void tour_list() {
+void tour_list() { // list 배열 출력
 	struct node *cp;
 	printf("\n");
 	
@@ -434,7 +441,7 @@ void tour_list() {
      2a0:	83 83       	std	Z+3, r24	; 0x03
      2a2:	0e 94 d5 05 	call	0xbaa	; 0xbaa <printf>
 
-void tour_list() {
+void tour_list() { // list 배열 출력
 	struct node *cp;
 	printf("\n");
 	
@@ -462,7 +469,7 @@ void tour_list() {
 
 000002ca <free_list>:
 
-void free_list()
+void free_list() // 노드 반납
 {
 	struct node *cp;
 	
@@ -483,7 +490,7 @@ void free_node(struct node *np)
 	free(np);
      2da:	0e 94 ad 04 	call	0x95a	; 0x95a <free>
 
-void free_list()
+void free_list() // 노드 반납
 {
 	struct node *cp;
 	
@@ -501,7 +508,7 @@ void free_list()
 
 000002ec <app_list>:
 
-void app_list(char *ap)
+void app_list(char *ap) // list 명령어 실행
 {
      2ec:	ef 92       	push	r14
      2ee:	ff 92       	push	r15
@@ -528,7 +535,7 @@ void app_list(char *ap)
 	}
 }	
 
-void app_list(char *ap)
+void app_list(char *ap) // list 명령어 실행
 {
 	char buf[8], how = 'a' ;
      310:	11 e6       	ldi	r17, 0x61	; 97
@@ -576,23 +583,23 @@ void app_list(char *ap)
      35a:	14 36       	cpi	r17, 0x64	; 100
      35c:	51 f4       	brne	.+20     	; 0x372 <app_list+0x86>
      35e:	06 c0       	rjmp	.+12     	; 0x36c <app_list+0x80>
-			case 'h' : insert_node_head(np); break;
+			case 'h' : insert_node_head(np); break; // 헤더
      360:	0e 94 9e 00 	call	0x13c	; 0x13c <insert_node_head>
      364:	da cf       	rjmp	.-76     	; 0x31a <app_list+0x2e>
-			case 't' : insert_node_tail(np); break;
+			case 't' : insert_node_tail(np); break; // 꼬리
      366:	0e 94 b3 00 	call	0x166	; 0x166 <insert_node_tail>
      36a:	d7 cf       	rjmp	.-82     	; 0x31a <app_list+0x2e>
-			case 'd' : insert_node_desc(np); break;
+			case 'd' : insert_node_desc(np); break; // 내림차순
      36c:	0e 94 01 01 	call	0x202	; 0x202 <insert_node_desc>
      370:	d4 cf       	rjmp	.-88     	; 0x31a <app_list+0x2e>
-			default : insert_node_ascn(np);
+			default : insert_node_ascn(np); // 오름차순
      372:	0e 94 ca 00 	call	0x194	; 0x194 <insert_node_ascn>
      376:	d1 cf       	rjmp	.-94     	; 0x31a <app_list+0x2e>
 		}
 	}
-	tour_list();
+	tour_list(); // 리스트 출력
      378:	0e 94 38 01 	call	0x270	; 0x270 <tour_list>
-	free_list();
+	free_list(); // 메모리 반납
      37c:	0e 94 65 01 	call	0x2ca	; 0x2ca <free_list>
 }
      380:	28 96       	adiw	r28, 0x08	; 8
@@ -613,7 +620,7 @@ void app_list(char *ap)
 	while(1); return 0;
 }
 
-ISR(USART0_TX_vect) // 전송 인터럽트 
+ISR(USART0_TX_vect) // 송신 인터럽트 
 {
      398:	1f 92       	push	r1
      39a:	0f 92       	push	r0
@@ -1082,7 +1089,7 @@ void uart_init()
 	else			return (ch);
 }
 
-void uart_echo(char ch)
+void uart_echo(char ch) // 수신 인터럽트 사용자 출력 부분
 {
      62e:	cf 93       	push	r28
      630:	c8 2f       	mov	r28, r24
@@ -1091,13 +1098,13 @@ void uart_echo(char ch)
      634:	19 f4       	brne	.+6      	; 0x63c <uart_echo+0xe>
      636:	8d e0       	ldi	r24, 0x0D	; 13
      638:	0e 94 17 03 	call	0x62e	; 0x62e <uart_echo>
-	if (!uart_busy) {
+	if (!uart_busy) { // 0 False, 1 True
      63c:	80 91 26 03 	lds	r24, 0x0326
      640:	88 23       	and	r24, r24
      642:	31 f4       	brne	.+12     	; 0x650 <uart_echo+0x22>
 		UDR0 = ch;
      644:	c0 93 c6 00 	sts	0x00C6, r28
-		uart_busy = 1;
+		uart_busy = 1; // UART : 0 (바쁘지 않다), UART : 1 (바쁘다)
      648:	81 e0       	ldi	r24, 0x01	; 1
      64a:	80 93 26 03 	sts	0x0326, r24
      64e:	03 c0       	rjmp	.+6      	; 0x656 <uart_echo+0x28>
@@ -1287,9 +1294,9 @@ void app_prime(char *ap)
      72e:	08 95       	ret
 
 00000730 <main>:
-
-int is_prime(int n);
-void app_prime(char *ap);
+#include "io.h" // IO
+#include "prime.h" // 소수 찾기
+#define E0T 0x04
 
 int main()
 {
@@ -1304,7 +1311,7 @@ int main()
      740:	de bf       	out	0x3e, r29	; 62
      742:	0f be       	out	0x3f, r0	; 63
      744:	cd bf       	out	0x3d, r28	; 61
-	char cmd[128], *cp, *ap;
+	char cmd[128], *cp, *ap; // cmd 배열 : 입력 내용 저장, cp 포인터 : 명령어, ap 포인터 : 인자
 
 	uart_init(); // UART 통신을 설정 및 초기화
      746:	0e 94 ee 02 	call	0x5dc	; 0x5dc <uart_init>
@@ -1323,7 +1330,7 @@ int main()
      75c:	d2 82       	std	Z+2, r13	; 0x02
      75e:	c1 82       	std	Z+1, r12	; 0x01
      760:	0e 94 d5 05 	call	0xbaa	; 0xbaa <printf>
-		if (fgets(cmd, sizeof(cmd), stdin) == NULL)
+		if (fgets(cmd, sizeof(cmd), stdin) == NULL) // Enter의 입력 대기
      764:	0f 90       	pop	r0
      766:	0f 90       	pop	r0
      768:	40 91 2b 03 	lds	r20, 0x032B
@@ -1336,7 +1343,7 @@ int main()
      77c:	00 97       	sbiw	r24, 0x00	; 0
      77e:	59 f1       	breq	.+86     	; 0x7d6 <main+0xa6>
 			break;
-		if((cp = strtok(cmd, "\n\r\t    ")) == NULL) continue;
+		if((cp = strtok(cmd, "\n\r\t    ")) == NULL) continue; // \n\r\t 기준 토큰 분리 (명령어)
      780:	ce 01       	movw	r24, r28
      782:	01 96       	adiw	r24, 0x01	; 1
      784:	6e e0       	ldi	r22, 0x0E	; 14
@@ -1345,7 +1352,7 @@ int main()
      78c:	8c 01       	movw	r16, r24
      78e:	00 97       	sbiw	r24, 0x00	; 0
      790:	09 f3       	breq	.-62     	; 0x754 <main+0x24>
-		ap = strtok(NULL, "\n\r\t  ");
+		ap = strtok(NULL, "\n\r\t  "); // \n\r\t 기준 토큰 분리 (인자)
      792:	80 e0       	ldi	r24, 0x00	; 0
      794:	90 e0       	ldi	r25, 0x00	; 0
      796:	66 e1       	ldi	r22, 0x16	; 22
@@ -1353,7 +1360,7 @@ int main()
      79a:	0e 94 64 05 	call	0xac8	; 0xac8 <strtok>
      79e:	7c 01       	movw	r14, r24
 
-		if(!strcmp(cp, "prime")) app_prime(ap);
+		if(!strcmp(cp, "prime")) app_prime(ap); // prime 명령어 ap 인자 전달
      7a0:	c8 01       	movw	r24, r16
      7a2:	6c e1       	ldi	r22, 0x1C	; 28
      7a4:	72 e0       	ldi	r23, 0x02	; 2
@@ -1363,7 +1370,7 @@ int main()
      7ae:	c7 01       	movw	r24, r14
      7b0:	0e 94 4b 03 	call	0x696	; 0x696 <app_prime>
      7b4:	cf cf       	rjmp	.-98     	; 0x754 <main+0x24>
-		else if (!strcmp(cp, "list" )) app_list(ap);
+		else if (!strcmp(cp, "list" )) app_list(ap); // list 명령어 ap 인자 전달
      7b6:	c8 01       	movw	r24, r16
      7b8:	62 e2       	ldi	r22, 0x22	; 34
      7ba:	72 e0       	ldi	r23, 0x02	; 2

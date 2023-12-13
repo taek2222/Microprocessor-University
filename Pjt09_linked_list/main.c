@@ -8,12 +8,9 @@
 #include "prime.h" // 소수 찾기
 #define E0T 0x04
 
-int is_prime(int n);
-void app_prime(char *ap);
-
 int main()
 {
-	char cmd[128], *cp, *ap;
+	char cmd[128], *cp, *ap; // cmd 배열 : 입력 내용 저장, cp 포인터 : 명령어, ap 포인터 : 인자
 
 	uart_init(); // UART 통신을 설정 및 초기화
 	sei(); // 인터럽트 활성화
@@ -21,18 +18,18 @@ int main()
 		printf("$ ");
 		if (fgets(cmd, sizeof(cmd), stdin) == NULL) // Enter의 입력 대기
 			break;
-		if((cp = strtok(cmd, "\n\r\t    ")) == NULL) continue;
-		ap = strtok(NULL, "\n\r\t  ");
+		if((cp = strtok(cmd, "\n\r\t    ")) == NULL) continue; // \n\r\t 기준 토큰 분리 (명령어)
+		ap = strtok(NULL, "\n\r\t  "); // \n\r\t 기준 토큰 분리 (인자)
 
-		if(!strcmp(cp, "prime")) app_prime(ap);
-		else if (!strcmp(cp, "list" )) app_list(ap);
+		if(!strcmp(cp, "prime")) app_prime(ap); // prime 명령어 ap 인자 전달
+		else if (!strcmp(cp, "list" )) app_list(ap); // list 명령어 ap 인자 전달
 		else						printf("Unknown command ...\n");
 	}
 	printf( "logout, good bye !!!\n");
 	while(1); return 0;
 }
 
-ISR(USART0_TX_vect) // 전송 인터럽트 
+ISR(USART0_TX_vect) // 송신 인터럽트 
 {
 	char	ch;
 
